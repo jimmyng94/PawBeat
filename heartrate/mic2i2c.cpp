@@ -6,8 +6,8 @@
 
 int main (void)
 {
-  int address = 0x48;
-  wiringPiI2CSetup (address) ;
+  //int address = 0x48;
+  //wiringPiI2CSetup (address) ;
   
   while(1){
   
