@@ -1,7 +1,16 @@
 #include <iostream>
 #include <wiringPi.h>
+#include <wiringPiI2C.h>
 
-int main()
+int main (void)
 {
-  std::cout << "Hello World!";
+  wiringPiSetup () ;
+  wiringPiI2CSetup (int 0x48) ;
+  pinMode (8, INPUT) ; //set RPi GPIO pin 8 as input - pin 8 is used for I2C
+  for (;;)
+  {
+    digitalWrite (0, HIGH) ; delay (500) ;
+    digitalWrite (0,  LOW) ; delay (500) ;
+  }
+  return 0 ;
 }
