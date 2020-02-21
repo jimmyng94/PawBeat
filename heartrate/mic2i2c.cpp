@@ -24,7 +24,6 @@ int main (void)
   // the private varaible _multiplierToVolts is auto-updated each time setGain is called
   std::cout << channel*multiplier;
   std::cout << "mV";
-  delay(50); // avoid bogging up serial monitor
   
   }
   
