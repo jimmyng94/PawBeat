@@ -1,3 +1,8 @@
+/*
+  Using SparkFun_ADS1015_Arduino_Library
+  https://github.com/sparkfun/SparkFun_ADS1015_Arduino_Library
+*/
+
 #include <iostream>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
