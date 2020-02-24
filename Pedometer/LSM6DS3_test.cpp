@@ -11,15 +11,25 @@ using namespace std;
 
 int main()
 {
-  uint16_t myImu= LSM6DS3Core ( I2C_MODE, 0x6B );
+  LSM6DS3Core my_imu; // constructor
+  /*// if more than 1 device 
+  LSM6DS3 SensorOne( I2C_MODE, 0x6A );
+  LSM6DS3 SensorTwo( I2C_MODE, 0x6B );
+  */
   
-  cout<< "Init result : " << fd<< endl;
+  if (my_imu.begin() != 0){
+    count<< " IMU fail to connect"<< endl;
+    return 0;
+  }
+  else {
+     count<< " IMU to connected!"<< endl;
+  }
   
   while (True):
   {
-    cout << "acc x: " <<myImu.readfloatAccelX()<< endl;
-    cout << "acc y: " <<myImu.readfloatAccelY()<< endl;
-    cout << "acc z: " <<myImu.readfloatAccelZ()<< endl;
+    cout << "acc x: " <<my_imu.readfloatAccelX()<< endl;
+    cout << "acc y: " <<my_imu.readfloatAccelY()<< endl;
+    cout << "acc z: " <<my_imu.readfloatAccelZ()<< endl;
   }
   return (0);
    
