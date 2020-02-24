@@ -4,32 +4,38 @@ reference: https://learn.sparkfun.com/tutorials/lsm6ds3-breakout-hookup-guide/al
 github: https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library
 */
 
-#include <SparkFunLSM6DS3.h>
+#include "SparkFunLSM6DS3.h"
 #include <wiringPiI2C.h>
+#include <iostream>
 
 using namespace std;
 
 int main()
 {
-  LSM6DS3Core my_imu; // constructor
+  LSM6DS3 my_imu(); // constructor
+  SensorSettings settingsIWanted;
+
   /*// if more than 1 device 
   LSM6DS3 SensorOne( I2C_MODE, 0x6A );
   LSM6DS3 SensorTwo( I2C_MODE, 0x6B );
   */
-  
-  if (my_imu.begin() != 0){
-    count<< " IMU fail to connect"<< endl;
+  if (my_imu.begin() != 0)
+  {
+    cout<< " IMU fail to connect"<< endl;
     return 0;
   }
   else {
-     count<< " IMU to connected!"<< endl;
+     cout<< " IMU to connected!"<< endl;
   }
   
-  while (True):
+  while (1)
   {
-    cout << "acc x: " <<my_imu.readfloatAccelX()<< endl;
-    cout << "acc y: " <<my_imu.readfloatAccelY()<< endl;
-    cout << "acc z: " <<my_imu.readfloatAccelZ()<< endl;
+    //printf(
+    cout << "acc x: ";
+    cout<< my_imu.readFloatAccelX();
+    cout<< endl;
+    //cout << "acc y: " <<my_imu.readFloatAccelY()<< endl;
+    //cout << "acc z: " <<my_imu.readFloatAccelZ()<< endl;
   }
   return (0);
    
