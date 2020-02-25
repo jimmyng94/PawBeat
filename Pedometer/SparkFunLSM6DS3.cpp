@@ -326,13 +326,13 @@ LSM6DS3::LSM6DS3( uint8_t busType, uint8_t inputArg ) : LSM6DS3Core( busType, in
 //  "myIMU.settings.accelEnabled = 1;" to configure before calling .begin();
 //
 //****************************************************************************//
-status_t LSM6DS3::begin(SensorSettings* pSettingsYouWanted)
+status_t LSM6DS3Core::defaultSettings(SensorSettings* pSettingsYouWanted)
 {
 	//Check the settings structure values to determine how to setup the device
 	uint8_t dataToWrite = 0;  //Temporary variable
 
 	//Begin the inherited core.  This gets the physical wires connected
-	status_t returnError = beginCore();
+	//status_t returnError = beginCore();
 	
 	// Copy the values from the user's settings into the output 'pSettingsYouWanted'
 	// compare settings with 'pSettingsYouWanted' after 'begin' to see if anything changed
