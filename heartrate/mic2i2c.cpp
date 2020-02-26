@@ -1,4 +1,7 @@
-
+/*
+openlabtools.eng.cam.ac.uk/Resources/Datalog/RPi_ADS1115/
+David Purdie
+*/
 #include <iostream>
 #include <fcntl.h>
 #include <inttypes.h>
