@@ -3,8 +3,8 @@
 ## Requirement
 *WiringPi
 
-### Install
-'cmake .'
-'make'
-'sudo make install'
-'sudo ldconfig'
+## Install
+<make .>
+<make>
+<sudo make install>
+<sudo ldconfig>
