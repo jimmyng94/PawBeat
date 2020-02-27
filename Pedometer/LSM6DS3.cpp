@@ -1,6 +1,6 @@
 /******************************************************************************
 SparkFunLSM6DS3.cpp
-LSM6DS3 Arduino, Teensy Driver, SparkFun ESP32 and ESP8266
+LSM6DS3 Raspberry Pi
 
 Marshall Taylor @ SparkFun Electronics
 May 20, 2015
@@ -24,14 +24,15 @@ Distributed as-is; no warranty is given.
 
 //See SparkFunLSM6DS3.h for additional topology notes.
 
-#include "SparkFunLSM6DS3.h"
+#include "LSM6DS3.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <thread>
+#include <unistd.h>
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
-#include <time>
+//#include <time>
 
 //****************************************************************************//
 //
@@ -126,31 +127,30 @@ status_t LSM6DS3Core::readRegisterRegion(uint8_t *outputPointer , uint8_t offset
 	switch (commInterface) {
 
 	case I2C_MODE:
+	{
 		_fd  = wiringPiI2CSetup(I2CAddress);
 		if (_fd<0)
 		{
 			fprintf(stderr,"Errr:I2C setup failed \n");
 			returnError = IMU_HW_ERROR;
 		}
-		wirigPiI2CWrite(_fd,offset);
+		wiringPiI2CWrite(_fd,offset);
 		uint8_t temp_dest[length];
 		if ((read(_fd,temp_dest,6))<0)
 		{
 			throw 999;
 			returnError = IMU_HW_ERROR;
 		}
-		//*outputPointe = wirigPiI2CRead(_fd,dataToWrite);
+		//*outputPointe = wiringPiI2CRead(_fd,dataToWrite);
 		close(_fd);
 		for (int i = 0; i <length; i++)
 		{
 			*outputPointer = temp_dest[i];
 			outputPointer ++;
 		}
-			break;
+	}
+	break;
 
-	case SPI_MODE:
-		
-		break;
 
 	default:
 		break;
@@ -183,8 +183,8 @@ status_t LSM6DS3Core::readRegister(uint8_t* outputPointer, uint8_t offset) {
 			fprintf(stderr,"Errr:I2C setup failed \n");
 			returnError = IMU_HW_ERROR;
 		}
-		wirigPiI2CWrite(_fd,offset);
-		result = wirigPiI2CRead(_fd);
+		wiringPiI2CWrite(_fd,offset);
+		result = wiringPiI2CRead(_fd);
 		close(_fd);
 		break;
 
@@ -240,7 +240,7 @@ status_t LSM6DS3Core::writeRegister(uint8_t offset, uint8_t dataToWrite) {
 			returnError = IMU_HW_ERROR;	
 		}	
 		
-		wirigPiI2CWrite(_fd,offset,dataToWrite);	
+		wiringPiI2CWriteReg8(_fd,offset,dataToWrite);	
 		close(_fd);	
 
 		break;
