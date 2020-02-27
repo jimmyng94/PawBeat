@@ -1,10 +1,10 @@
 # LSM6DS3 RaspberryPI C++ Library
 
 ## Requirement
-*WiringPi
+* WiringPi
 
 ## Install
-*make .
-*make
-*sudo make install
-*sudo ldconfig
+* make .
+* make
+* sudo make install
+* sudo ldconfig
