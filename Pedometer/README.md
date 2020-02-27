@@ -4,7 +4,7 @@
 *WiringPi
 
 ## Install
-<make .>
-<make>
-<sudo make install>
-<sudo ldconfig>
+*make .
+*make
+*sudo make install
+*sudo ldconfig
