@@ -1,20 +1,20 @@
 /******************************************************************************
 SparkFunLSM6DS3.h
-LSM6DS3 Arduino and Teensy Driver
-
+LSM6DS3 Raspberry Pi
 Marshall Taylor @ SparkFun Electronics
-May 20, 2015
+original Creation Date :May 20, 2015
 https://github.com/sparkfun/LSM6DS3_Breakout
 https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library
 
+2020, Ng Jing Ming, ngjm57@ggmail.com
+
 Resources:
-Uses Wire.h for i2c operation
-Uses SPI.h for SPI operation
+Uses wiringPi.h for i2c operation
 Either can be omitted if not used
 
 Development environment specifics:
-Arduino IDE 1.6.4
-Teensy loader 1.23
+Hardware Platform: Raspberry Pi
+IMU Hardware :LSM6DS3
 
 This code is released under the [MIT License](http://opensource.org/licenses/MIT).
 
