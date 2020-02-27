@@ -91,6 +91,7 @@ private:
 	uint8_t commInterface;
 	uint8_t I2CAddress;
 	uint8_t chipSelectPin;
+	uint8_t _fd;
 
 };
 
@@ -136,7 +137,8 @@ public:
 //method through it's own begin() method.  It also contains the
 //settings struct to hold user settings.
 
-class LSM6DS3 : public LSM6DS3Core{
+class LSM6DS3 : public LSM6DS3Core
+{
 public:
 	//IMU settings
 	SensorSettings settings;
