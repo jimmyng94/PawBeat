@@ -8,14 +8,11 @@ https://github.com/sparkfun/LSM6DS3_Breakout
 https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library
 
 Resources:
-Uses Wire.h for i2c operation
-Uses SPI.h for SPI operation
+Uses WiringPi.h for i2c operation
 Either can be omitted if not used
 
 Development environment specifics:
-Arduino IDE 1.6.4
-Teensy loader 1.23
-ESPTool 2.6 for ESP32
+Raspberry Pi
 
 This code is released under the [MIT License](http://opensource.org/licenses/MIT).
 
@@ -51,33 +48,18 @@ Distributed as-is; no warranty is given.
 //  Default construction is I2C mode, address 0x6B.
 //
 //****************************************************************************//
-LSM6DS3Core::LSM6DS3Core( uint8_t busType, uint8_t inputArg) : commInterface(I2C_MODE), I2CAddress(0x6B), chipSelectPin(10)
+LSM6DS3Core::LSM6DS3Core( uint8_t busType, uint8_t inputArg) : commInterface(I2C_MODE), I2CAddress(0x6B)
 {
 	commInterface = busType;
-	if( commInterface == I2C_MODE )
-	{
-		I2CAddress = inputArg;
-	}
-	if( commInterface == SPI_MODE )
-	{
-		chipSelectPin = inputArg;
-	}
-
+	I2CAddress = inputArg;
+	
 }
 
 status_t LSM6DS3Core::beginCore(void)
 {
 	status_t returnError = IMU_SUCCESS;
 
-	switch (commInterface) {
-
-	case I2C_MODE:
-		//Wire.begin();
-		//break;
-
-	default:
-		break;
-	}
+	_fd = wiringPiI2CSetup(I2CAddress);
 
 	//Spin for a few ms
 	volatile uint8_t temp = 0;
@@ -93,7 +75,7 @@ status_t LSM6DS3Core::beginCore(void)
 	{
 		returnError = IMU_HW_ERROR;
 	}
-
+	close(_fd);
 	return returnError;
 
 }
@@ -122,42 +104,28 @@ status_t LSM6DS3Core::readRegisterRegion(uint8_t *outputPointer , uint8_t offset
 	uint8_t c = 0;
 	uint8_t tempFFCounter = 0;
 
-	switch (commInterface) {
-
-	case I2C_MODE:
-		_fd  = wiringPiI2CSetup(I2CAddress);
-		if (_fd<0)
-		{
-			fprintf(stderr,"Errr:I2C setup failed \n");
-		}
-		wirigPiI2CWrite(_fd,offset);
-		*outputPointe = wirigPiI2CRead(_fd,dataToWrite);
-		close(_fd);
-	/*
-		Wire.beginTransmission(I2CAddress);
-		Wire.write(offset);
-		if( Wire.endTransmission() != 0 )
-		{
-			returnError = IMU_HW_ERROR;
-		}
-		else  //OK, all worked, keep going
-		{
-			// request 6 bytes from slave device
-			Wire.requestFrom(I2CAddress, length);
-			while ( (Wire.available()) && (i < length))  // slave may send less than requested
-			{
-				c = Wire.read(); // receive a byte as character
-				*outputPointer = c;
-				outputPointer++;
-				i++;
-			}
-		}*/
-		break;
-
-
-	default:
-		break;
+	
+	_fd  = wiringPiI2CSetup(I2CAddress);
+	if (_fd<0)
+	{
+		fprintf(stderr,"Errr:I2C setup failed \n");
+		returnError = IMU_HW_ERROR;
 	}
+	wirigPiI2CWrite(_fd,offset);
+	uint8_t temp_dest[length];
+	if ((read(_fd,temp_dest,6))<0)
+	{
+		throw 999;
+		returnError = IMU_HW_ERROR;
+	}
+	//*outputPointe = wirigPiI2CRead(_fd,dataToWrite);
+	close(_fd);
+	for (int i = 0; i <count; i++)
+	{
+		*outputPointer = temp_dest[i];
+		outputPointer ++;
+	}
+	
 
 	return returnError;
 }
@@ -177,35 +145,17 @@ status_t LSM6DS3Core::readRegister(uint8_t* outputPointer, uint8_t offset) {
 	uint8_t numBytes = 1;
 	status_t returnError = IMU_SUCCESS;
 
-	switch (commInterface) {
 
-	case I2C_MODE:
-		_fd  = wiringPiI2CSetup(I2CAddress);
-		if (_fd<0)
-		{
-			fprintf(stderr,"Errr:I2C setup failed \n");
-		}
-		wirigPiI2CWrite(_fd,offset);
-		result = wirigPiI2CRead(_fd);
-		close(_fd);
-		/*
-		Wire.beginTransmission(I2CAddress);
-		Wire.write(offset);
-		if( Wire.endTransmission() != 0 )
-		{
-			returnError = IMU_HW_ERROR;
-		}
-		Wire.requestFrom(I2CAddress, numBytes);
-		while ( Wire.available() ) // slave may send less than requested
-		{
-			result = Wire.read(); // receive a byte as a proper uint8_t
-		}*/
-		break;
-
-	default:
-		break;
+	_fd  = wiringPiI2CSetup(I2CAddress);
+	if (_fd<0)
+	{
+		fprintf(stderr,"Errr:I2C setup failed \n");
+		returnError = IMU_HW_ERROR;
 	}
-
+	wirigPiI2CWrite(_fd,offset);
+	result = wirigPiI2CRead(_fd);
+	close(_fd);
+	
 	*outputPointer = result;
 	return returnError;
 }
@@ -240,23 +190,17 @@ status_t LSM6DS3Core::readRegisterInt16( int16_t* outputPointer, uint8_t offset 
 //****************************************************************************//
 status_t LSM6DS3Core::writeRegister(uint8_t offset, uint8_t dataToWrite) {
 	status_t returnError = IMU_SUCCESS;
-	switch (commInterface) {
-	case I2C_MODE:
-		//Write the byte
-		_fd  = wiringPiI2CSetup(I2CAddress);
-		if (_fd<0)
-		{
-			fprintf(stderr,"Errr:I2C setup failed \n");
-		}
-		wirigPiI2CWrite(_fd,offset);
-		wirigPiI2CWrite(_fd,dataToWrite);
-		close(_fd);
-		break;
-
-
-	default:
-		break;
+	
+	//Write the byte
+	_fd  = wiringPiI2CSetup(I2CAddress);
+	if (_fd<0)
+	{
+		fprintf(stderr,"Errr:I2C setup failed \n");
+		returnError = IMU_HW_ERROR;
 	}
+	
+	wirigPiI2CWrite(_fd,offset,dataToWrite);
+	close(_fd);
 
 	return returnError;
 }
@@ -326,13 +270,13 @@ LSM6DS3::LSM6DS3( uint8_t busType, uint8_t inputArg ) : LSM6DS3Core( busType, in
 //  "myIMU.settings.accelEnabled = 1;" to configure before calling .begin();
 //
 //****************************************************************************//
-status_t LSM6DS3Core::defaultSettings(SensorSettings* pSettingsYouWanted)
+status_t LSM6DS3Core::begin(SensorSettings* pSettingsYouWanted)
 {
 	//Check the settings structure values to determine how to setup the device
 	uint8_t dataToWrite = 0;  //Temporary variable
 
 	//Begin the inherited core.  This gets the physical wires connected
-	//status_t returnError = beginCore();
+	status_t returnError = beginCore();
 	
 	// Copy the values from the user's settings into the output 'pSettingsYouWanted'
 	// compare settings with 'pSettingsYouWanted' after 'begin' to see if anything changed
@@ -840,4 +784,3 @@ void LSM6DS3::fifoEnd( void ) {
 	// turn off the fifo
 	writeRegister(LSM6DS3_ACC_GYRO_FIFO_CTRL5, 0x00);  //Disable
 }
-
