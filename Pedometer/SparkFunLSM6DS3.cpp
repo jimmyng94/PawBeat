@@ -32,6 +32,7 @@ Distributed as-is; no warranty is given.
 #include <wiringPi.h>
 #include <wiringPiI2C.h>
 #include <time>
+
 //****************************************************************************//
 //
 //  LSM6DS3Core functions.
@@ -48,18 +49,36 @@ Distributed as-is; no warranty is given.
 //  Default construction is I2C mode, address 0x6B.
 //
 //****************************************************************************//
-LSM6DS3Core::LSM6DS3Core( uint8_t busType, uint8_t inputArg) : commInterface(I2C_MODE), I2CAddress(0x6B)
+LSM6DS3Core::LSM6DS3Core( uint8_t busType, uint8_t inputArg) : commInterface(I2C_MODE), I2CAddress(0x6B), chipSelectPin(10)
 {
 	commInterface = busType;
-	I2CAddress = inputArg;
-	
+	if( commInterface == I2C_MODE )
+	{
+		I2CAddress = inputArg;
+	}
+	if( commInterface == SPI_MODE )
+	{
+		chipSelectPin = inputArg;
+	}
+
 }
 
 status_t LSM6DS3Core::beginCore(void)
 {
 	status_t returnError = IMU_SUCCESS;
 
-	_fd = wiringPiI2CSetup(I2CAddress);
+	switch (commInterface) {
+
+	case I2C_MODE:
+		//Wire.begin();
+		_fd = wiringPiI2CSetup (I2CAddress);
+		break;
+
+	case SPI_MODE:
+		break;
+	default:
+		break;
+	}
 
 	//Spin for a few ms
 	volatile uint8_t temp = 0;
@@ -104,29 +123,39 @@ status_t LSM6DS3Core::readRegisterRegion(uint8_t *outputPointer , uint8_t offset
 	uint8_t c = 0;
 	uint8_t tempFFCounter = 0;
 
-	
-	_fd  = wiringPiI2CSetup(I2CAddress);
-	if (_fd<0)
-	{
-		fprintf(stderr,"Errr:I2C setup failed \n");
-		returnError = IMU_HW_ERROR;
-	}
-	wirigPiI2CWrite(_fd,offset);
-	uint8_t temp_dest[length];
-	if ((read(_fd,temp_dest,6))<0)
-	{
-		throw 999;
-		returnError = IMU_HW_ERROR;
-	}
-	//*outputPointe = wirigPiI2CRead(_fd,dataToWrite);
-	close(_fd);
-	for (int i = 0; i <count; i++)
-	{
-		*outputPointer = temp_dest[i];
-		outputPointer ++;
-	}
-	
+	switch (commInterface) {
 
+	case I2C_MODE:
+		_fd  = wiringPiI2CSetup(I2CAddress);
+		if (_fd<0)
+		{
+			fprintf(stderr,"Errr:I2C setup failed \n");
+			returnError = IMU_HW_ERROR;
+		}
+		wirigPiI2CWrite(_fd,offset);
+		uint8_t temp_dest[length];
+		if ((read(_fd,temp_dest,6))<0)
+		{
+			throw 999;
+			returnError = IMU_HW_ERROR;
+		}
+		//*outputPointe = wirigPiI2CRead(_fd,dataToWrite);
+		close(_fd);
+		for (int i = 0; i <length; i++)
+		{
+			*outputPointer = temp_dest[i];
+			outputPointer ++;
+		}
+			break;
+
+	case SPI_MODE:
+		
+		break;
+
+	default:
+		break;
+	}
+	
 	return returnError;
 }
 
@@ -145,17 +174,27 @@ status_t LSM6DS3Core::readRegister(uint8_t* outputPointer, uint8_t offset) {
 	uint8_t numBytes = 1;
 	status_t returnError = IMU_SUCCESS;
 
+	switch (commInterface) {
 
-	_fd  = wiringPiI2CSetup(I2CAddress);
-	if (_fd<0)
-	{
-		fprintf(stderr,"Errr:I2C setup failed \n");
-		returnError = IMU_HW_ERROR;
+	case I2C_MODE:
+		_fd  = wiringPiI2CSetup(I2CAddress);
+		if (_fd<0)
+		{
+			fprintf(stderr,"Errr:I2C setup failed \n");
+			returnError = IMU_HW_ERROR;
+		}
+		wirigPiI2CWrite(_fd,offset);
+		result = wirigPiI2CRead(_fd);
+		close(_fd);
+		break;
+
+	case SPI_MODE:
+		break;
+
+	default:
+		break;
 	}
-	wirigPiI2CWrite(_fd,offset);
-	result = wirigPiI2CRead(_fd);
-	close(_fd);
-	
+
 	*outputPointer = result;
 	return returnError;
 }
@@ -190,17 +229,31 @@ status_t LSM6DS3Core::readRegisterInt16( int16_t* outputPointer, uint8_t offset 
 //****************************************************************************//
 status_t LSM6DS3Core::writeRegister(uint8_t offset, uint8_t dataToWrite) {
 	status_t returnError = IMU_SUCCESS;
-	
-	//Write the byte
-	_fd  = wiringPiI2CSetup(I2CAddress);
-	if (_fd<0)
-	{
-		fprintf(stderr,"Errr:I2C setup failed \n");
-		returnError = IMU_HW_ERROR;
+	switch (commInterface) {
+	case I2C_MODE:
+		
+	//Write the byte	
+		_fd  = wiringPiI2CSetup(I2CAddress);	
+		if (_fd<0)	
+		{	
+			fprintf(stderr,"Errr:I2C setup failed \n");	
+			returnError = IMU_HW_ERROR;	
+		}	
+		
+		wirigPiI2CWrite(_fd,offset,dataToWrite);	
+		close(_fd);	
+
+		break;
+
+	case SPI_MODE:
+		
+		break;
+		
+		//No way to check error on this write (Except to read back but that's not reliable)
+
+	default:
+		break;
 	}
-	
-	wirigPiI2CWrite(_fd,offset,dataToWrite);
-	close(_fd);
 
 	return returnError;
 }
@@ -270,7 +323,7 @@ LSM6DS3::LSM6DS3( uint8_t busType, uint8_t inputArg ) : LSM6DS3Core( busType, in
 //  "myIMU.settings.accelEnabled = 1;" to configure before calling .begin();
 //
 //****************************************************************************//
-status_t LSM6DS3Core::begin(SensorSettings* pSettingsYouWanted)
+status_t LSM6DS3::begin(SensorSettings* pSettingsYouWanted)
 {
 	//Check the settings structure values to determine how to setup the device
 	uint8_t dataToWrite = 0;  //Temporary variable
