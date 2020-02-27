@@ -1,4 +1,4 @@
-#LSM6DS3 RaspberryPI C++ Library
+# LSM6DS3 RaspberryPI C++ Library
 
 ## Requirement
 *WiringPi
