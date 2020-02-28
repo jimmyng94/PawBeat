@@ -4,7 +4,7 @@
 * WiringPi
 
 ## Install
-* make .
+* cmake .
 * make
 * sudo make install
 * sudo ldconfig
