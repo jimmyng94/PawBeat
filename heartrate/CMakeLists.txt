@@ -1,0 +1,47 @@
+cmake_minimum_required(VERSION 3.0.0)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+	set(CMAKE_BUILD_TYPE "RelWithDebInfo")
+endif()
+
+project(ADS1015_RaspberryPi_Library LANGUAGES CXX)
+include(GNUInstallDirs)
+
+
+# add_compile_options(-Wall -Wconversion -Wextra -pedantic)
+
+set(LIBSRC ADS1015.cpp)
+set(LIBINCLUDE ADS1015.h)
+
+add_library(ADS1015
+  SHARED
+  ${LIBSRC}
+  )
+
+set_target_properties(ADS1015 PROPERTIES
+  SOVERSION 1
+  PUBLIC_HEADER "${LIBINCLUDE}")
+
+target_link_libraries(ADS1015 wiringPi)
+
+install(TARGETS ADS1015 EXPORT ADS1015-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+
+
+
+add_library(ADS1015_static
+  STATIC
+  ${LIBSRC}
+  )
+
+set_target_properties(ADS1015_static PROPERTIES
+  PUBLIC_HEADER "${LIBINCLUDE}")
+
+target_link_libraries(ADS1015_static wiringPi)
+
+install(TARGETS ADS1015_static EXPORT ADS1015_static-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
