@@ -4,9 +4,9 @@
 * [WiringPi](http://wiringpi.com/)
 
 ## Install
-'''
+```
 cmake .
 make
 sudo make install
 sudo ldconfig
-'''
+```
