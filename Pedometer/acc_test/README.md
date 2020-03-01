@@ -1,3 +1,5 @@
-$ cmake .
-$ make
-$ ./acc_test
+```
+cmake .
+make
+./acc_test
+```
