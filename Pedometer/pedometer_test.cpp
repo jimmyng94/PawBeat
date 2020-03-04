@@ -1,9 +1,10 @@
-#include "LSM6DS3"
+#include <unistd.h>
+#include "LSM6DS3.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <thread.h>
-#include <chrono.h>
+//#include <thread.h>
+//#include <chrono.h>
 
 int main()
 {
@@ -16,7 +17,7 @@ int main()
 	}
 	else
 	{
-		printf(\nbeginCore() passed.\n");
+		printf("\nbeginCore() passed.\n");
 	}
 
 	uint8_t errorAccumulator =0;
@@ -50,23 +51,28 @@ int main()
 	{
 		printf("Device O.K.\n");
 	}
+  	uint8_t readDataByte = 0;
+		uint16_t stepsTaken = 0;
 	
 	while(1)
 	{
-		uint8_t readDataByte = 0;
-		uint16_t stepsTaken = 0;
+	
     
 		//Read the 16bit value by two 8bit operations
-		imu.readRegister(&readDataByte, LSM6DS3_ACC_GYRO_STEP_COUNTER_H);
+		
+    imu.readRegister(&readDataByte, LSM6DS3_ACC_GYRO_STEP_COUNTER_H);
 		stepsTaken = ((uint16_t)readDataByte) << 8;
+    printf("%f " ,readDataByte); 
 	
 		imu.readRegister(&readDataByte, LSM6DS3_ACC_GYRO_STEP_COUNTER_L);
 		stepsTaken |= readDataByte;
 	
 	
 		//Display steps taken
-		Serial.print("Steps taken: %f \n", stepsTaken);
-		std::this_thread::sleep_for (std::chrono::seconds(1));
+		printf("Steps taken: %f \n", stepsTaken);
+		//std::this_thread::sleep_for (std::chrono::seconds(1));
+    usleep(10000);
  
 	}
+  return 0;
 }
