@@ -1,8 +1,6 @@
-/*
-openlabtools.eng.cam.ac.uk/Resources/Datalog/RPi_ADS1115/
-David Purdie
-*/
+
 #include <iostream>
+#include <fstream>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <linux/i2c-dev.h>
@@ -12,52 +10,51 @@ David Purdie
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
+#include <wiringPi.h>
+#include <wiringPiI2C.h>
+#include <errno.h>
+#include <ADS1015.h>
+#include <vector>
+#include <cmath>
+
+using namespace std;
  
-//#include <wiringPi.h>
-//#include <wiringPiI2C.h>
-//#include <errno.h>
-//#include <SparkFun_ADS1015_Arduino_Library.h>
+int main(int argc, char *argv[])
+{
+  Adafruit_ADS1015 ads;
+  uint16_t adc0;
+  
+  double buffer[2][12000] = {};
+  int c = 0;
+  int t = 0;
+  
+  
+  ads.begin();
+  ads.setGain(GAIN_TWO);
+  
+  while (c<12000) {
+    adc0 = ads.readADC_SingleEnded(0);
+    double val = adc0*2.048/4096*2.0;
+    
+    if(c == 12000){
+        c = 0;
+      }
+    
+    buffer[0][c] = val;
+    
+    buffer[1][c] = t;
+    
+    cout << c << endl;
 
-int main (){
-  
-  int addr = 0x48;
-  int I2CFile;
-  
-  uint8_t writeBuf[3]; 
-  uint8_t readBuf[2];
-  
-  int16_t val;
-  
-  I2CFile = open("/dev/i2c-1", O_RDWR);
-  
-  ioctl(I2CFile, I2C_SLAVE, addr);
-
-  writeBuf[0] = 1;
-  writeBuf[1] = 0xC3;
-  writeBuf[2] = 0x03;
-while(1){  
-  readBuf[0] = 0;
-  readBuf[1] = 0;
-  
-  write(I2CFile, writeBuf, 3);
-  while((readBuf[0] & 0x80) == 0){
-    read(I2CFile, readBuf, 2);
+    c++;
+    t++;
   }
   
-  writeBuf[0] = 0;
-  
-  write(I2CFile, writeBuf, 1);
-  
-  read(I2CFile, readBuf, 2);
-  
-  val = readBuf[0] << 8|readBuf[1];
-  
-  printf("voltage reading %f (V) \n", (float)val*4.096/32767.0);
-  //readBuf[0] = 0;
-  //readBuf[1] = 0;
-}
-  
-  close(I2CFile);
-  
-  return 0 ;
+  ofstream myfile;
+  myfile.open("heartbeat_30.txt");
+  for (int i = 0; i < 12000; i++){
+    myfile << buffer[0][i];
+    myfile << endl;
+  }
+  myfile.close();
 }
