@@ -1,1 +1,1 @@
-This folder contains all the hardware version developed for this project 
+This folder contains the hardware, datasheet, schematics and PCB developed for this project. 
