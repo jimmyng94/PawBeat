@@ -16,6 +16,7 @@
 #include <ADS1015.h>
 #include <vector>
 #include <cmath>
+#include <time.h>
 
 using namespace std;
  
