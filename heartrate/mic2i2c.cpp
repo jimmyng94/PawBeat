@@ -19,22 +19,36 @@
 #include <time.h>
 
 using namespace std;
- 
+ int c = 0;
+double buffer[12000] = {};
+
+void getValue(){
+ uint16_t adc0 = ads.readADC_SingleEnded(0);
+ double val = adc0*2.048/4096*2.0;
+ addValue(val);
+}
+
+void addValue(uint16_t value){
+ buffer[c] = val;
+ cout << c << endl;
+ c++;
+}
+
 int main(int argc, char *argv[])
 {
   Adafruit_ADS1015 ads;
-  uint16_t adc0;
+  //uint16_t adc0;
   
-  double buffer[2][12000] = {};
-  int c = 0;
-  int t = 0;
+  //double buffer[2][12000] = {};
+  //int c = 0;
+  //int t = 0;
   
   
   ads.begin();
   ads.setGain(GAIN_TWO);
   
   while (c<12000) {
-    adc0 = ads.readADC_SingleEnded(0);
+    /*adc0 = ads.readADC_SingleEnded(0);
     double val = adc0*2.048/4096*2.0;
     
     if(c == 12000){
@@ -48,7 +62,8 @@ int main(int argc, char *argv[])
     cout << c << endl;
 
     c++;
-    t++;
+    t++;*/
+   wiringPiISR(13, INT_EDGE_RISING, getValue());
   }
   
   ofstream myfile;
