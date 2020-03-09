@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <fcntl.h>
@@ -21,6 +20,13 @@
 using namespace std;
  int c = 0;
 double buffer[12000] = {};
+Adafruit_ADS1015 ads;
+
+void addValue(uint16_t value){
+ buffer[c] = value;
+ cout << c << endl;
+ c++;
+}
 
 void getValue(){
  uint16_t adc0 = ads.readADC_SingleEnded(0);
@@ -28,15 +34,9 @@ void getValue(){
  addValue(val);
 }
 
-void addValue(uint16_t value){
- buffer[c] = val;
- cout << c << endl;
- c++;
-}
-
 int main(int argc, char *argv[])
 {
-  Adafruit_ADS1015 ads;
+
   //uint16_t adc0;
   
   //double buffer[2][12000] = {};
