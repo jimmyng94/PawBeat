@@ -1,0 +1,11 @@
+09/03/2020, 1552hrs
+/home/pi/Documents/pawpulse/mic_test/mic_test.cpp: In function ‘int main(int, char**)’:
+/home/pi/Documents/pawpulse/mic_test/mic_test.cpp:66:47: error: invalid use of void expression
+    wiringPiISR(13, INT_EDGE_RISING, getValue());
+                                               ^
+/home/pi/Documents/pawpulse/mic_test/mic_test.cpp:72:26: error: invalid types ‘double[int]’ for array subscript
+     myfile << buffer[0][i];
+                          ^
+make[2]: *** [CMakeFiles/mic_test.dir/build.make:63: CMakeFiles/mic_test.dir/mic_test.cpp.o] Error 1
+make[1]: *** [CMakeFiles/Makefile2:68: CMakeFiles/mic_test.dir/all] Error 2
+make: *** [Makefile:84: all] Error 2
