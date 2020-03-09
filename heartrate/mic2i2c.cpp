@@ -18,17 +18,19 @@
 #include <time.h>
 
 using namespace std;
- int c = 0;
+static volatile int counter = 0;
 double buffer[12000] = {};
 Adafruit_ADS1015 ads;
 
 void addValue(uint16_t value){
- buffer[c] = value;
- cout << c << endl;
- c++;
+ if(counter < 12000){
+  buffer[counter] = value;
+ }
+ cout << counter << endl;
+ counter++;
 }
 
-void getValue(){
+void getValue(void){
  uint16_t adc0 = ads.readADC_SingleEnded(0);
  double val = adc0*2.048/4096*2.0;
  addValue(val);
@@ -47,7 +49,7 @@ int main(int argc, char *argv[])
   ads.begin();
   ads.setGain(GAIN_TWO);
   
-  while (c<12000) {
+  while (counter<12000) {
     /*adc0 = ads.readADC_SingleEnded(0);
     double val = adc0*2.048/4096*2.0;
     
@@ -63,13 +65,13 @@ int main(int argc, char *argv[])
 
     c++;
     t++;*/
-   wiringPiISR(13, INT_EDGE_RISING, getValue());
+   wiringPiISR(13, INT_EDGE_RISING, &getValue);
   }
   
   ofstream myfile;
   myfile.open("heartbeat_30.txt");
   for (int i = 0; i < 12000; i++){
-    myfile << buffer[0][i];
+    myfile << buffer[i];
     myfile << endl;
   }
   myfile.close();
