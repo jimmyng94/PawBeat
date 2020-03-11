@@ -286,15 +286,15 @@ LSM6DS3::LSM6DS3( uint8_t busType, uint8_t inputArg ) : LSM6DS3Core( busType, in
 
 	settings.gyroEnabled = 1;  //Can be 0 or 1
 	settings.gyroRange = 2000;   //Max deg/s.  Can be: 125, 245, 500, 1000, 2000
-	settings.gyroSampleRate = 416;   //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666
+	settings.gyroSampleRate = 26;   //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666
 	settings.gyroBandWidth = 400;  //Hz.  Can be: 50, 100, 200, 400;
 	settings.gyroFifoEnabled = 1;  //Set to include gyro in FIFO
 	settings.gyroFifoDecimation = 1;  //set 1 for on /1
 
 	settings.accelEnabled = 1;
 	settings.accelODROff = 1;
-	settings.accelRange = 16;      //Max G force readable.  Can be: 2, 4, 8, 16
-	settings.accelSampleRate = 416;  //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666, 3332, 6664, 13330
+	settings.accelRange = 2;      //Max G force readable.  Can be: 2, 4, 8, 16
+	settings.accelSampleRate = 26;  //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666, 3332, 6664, 13330
 	settings.accelBandWidth = 100;  //Hz.  Can be: 50, 100, 200, 400;
 	settings.accelFifoEnabled = 1;  //Set to include accelerometer in the FIFO
 	settings.accelFifoDecimation = 1;  //set 1 for on /1
@@ -511,7 +511,7 @@ status_t LSM6DS3::begin(SensorSettings* pSettingsYouWanted)
 	//Setup the internal temperature sensor
 	if ( settings.tempEnabled == 1) {
 	}
-
+	WriteRegister(LSM6DS3_ACC_GYRO_INT1_CTRL ,0x10);
 	//Return WHO AM I reg  //Not no mo!
 	uint8_t result;
 	readRegister(&result, LSM6DS3_ACC_GYRO_WHO_AM_I_REG);
