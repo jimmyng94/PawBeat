@@ -115,10 +115,10 @@
 	var channelName = m.channel;
 	console.log(m.message); //log message on console
 	if (channelName == "bpm") {
-		document.getElementById("bpmMsg").innerHTML=msg.text
+		document.getElementById("bpmMsg").innerHTML=msg.eon.bpm
 	}
 	if (channelName == "step") {
-		document.getElementById("stepMsg").innerHTML=msg.text
+		document.getElementById("stepMsg").innerHTML=msg.eon.step
 	}
 	}
 	});
