@@ -1,4 +1,4 @@
-# LSM6DS3 RaspberryPI C++ Library
+# Heart Rate Processing using Microphone output through ADS 1014 
 
 ## Requirements
 * [WiringPi](http://wiringpi.com/)
