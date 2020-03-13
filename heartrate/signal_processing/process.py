@@ -1,25 +1,28 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 11 12:48:09 2020
-
-@author: 2489492w
-"""
+#Some code sourced from Bernd Porr's https://www.youtube.com/watch?v=flSL0SXNjbI
 
 import numpy as np
 import scipy.signal as ss
 import matplotlib.pyplot as plt
 from FIR_filter import myFIR_filter
 
-fs = 1600
-f1 = 95
-f2 = 105
+fs = 70
+f1 = 20
+f2 = 27
+f3 = 615
+f4 = 625
+f6 = 670
+f7 = 680
+f8 = 735
+f9 = 745
 
-b = ss.firwin(1599,[f1/fs*2,f2/fs*2], pass_zero = False);
+B = [f1/fs*2]#,f2/fs*2]#,f3/fs*2,f4/fs*2,f6/fs*2,f7/fs*2,f8/fs*2,f9/fs*2]
+
+b = ss.firwin(141,B,pass_zero = False)
 
 
 
 plt.close("all")
-A = np.loadtxt('ads_data.txt')
+A = np.loadtxt('ads_data70.txt')
 
 plt.figure(11)
 plt.plot (A)
@@ -31,7 +34,7 @@ input_array = A
 #by examining the three plots of the input values, X was chosen as having the best signal pre-filtering
 
 plt.figure(22)
-plt.plot(np.linspace(0,1600,len(input_array)),np.abs(np.fft.fft(input_array)))
+plt.plot(np.linspace(0,fs,len(input_array)),np.abs(np.fft.fft(input_array)))
 plt.title('Original ECG in Frequency Domain')
 plt.xlabel('Frequency (Hz)')
 plt.show(block = True)
@@ -77,7 +80,42 @@ plt.xlabel('Time (s)')
 plt.show(block = True)
 
 plt.figure(222)
-plt.plot(np.linspace(0,1600,len(output_array)),np.abs(np.fft.fft(output_array)))
+plt.plot(np.linspace(0,fs,len(output_array)),np.abs(np.fft.fft(output_array)))
 plt.title('Filtered ECG in Frequency Domain')
 plt.xlabel('Frequency (Hz)')
 plt.show(block = True)
+
+detsq = np.square(output_array)
+
+plt.figure(333)
+plt.plot(detsq)
+plt.title('Filtered ECG in Time Domain')
+plt.xlabel('Time (s)')
+plt.show(block = True)
+
+detthres = np.zeros(3700)
+last = 0
+upflag = 0
+pulse = np.zeros(3700)
+p = 0
+
+for i in range(len(detsq)):
+    if(detsq[i] > 10):
+        if(upflag == 0):
+            if(last > -1):
+                t = i-last
+                p = fs/t*60
+            last = i
+            print(last)
+        upflag = 35
+    else:
+        if(upflag > 0):
+            upflag = upflag - 1
+    pulse[i] = p
+
+plt.figure(444)
+plt.plot(pulse)
+plt.show(block = True)
+
+
+
