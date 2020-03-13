@@ -27,7 +27,7 @@
 //#include <Wire.h>
 #include <unistd.h>
 #include <wiringPiI2C.h>
-
+#include <iostream>
 #include "ADS1015.h"
 
 /**************************************************************************/
@@ -192,7 +192,7 @@ uint16_t Adafruit_ADS1015::readADC_SingleEnded(uint8_t channel) {
                     ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_DR_128SPS   | // 1600 samples per second (default)
                     ADS1015_REG_CONFIG_MODE_SINGLE;   // Single-shot mode (default)
 
   // Set PGA/voltage range
@@ -338,18 +338,17 @@ int16_t Adafruit_ADS1015::readADC_Differential_2_3() {
             value exceeds the specified threshold.
 
             This will also set the ADC in continuous conversion mode.
+    (jimmy)Editted to set up for interrupt anc continuous conversion
 */
 /**************************************************************************/
 void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t threshold)
 {
   // Start with default values
-  uint16_t config = ADS1015_REG_CONFIG_CQUE_1CONV   | // Comparator enabled and asserts on 1 match
-                    ADS1015_REG_CONFIG_CLAT_LATCH   | // Latching mode
+  uint16_t config = ADS1015_REG_CONFIG_CLAT_NONLAT  | // Non-latching (default val)
                     ADS1015_REG_CONFIG_CPOL_ACTVLOW | // Alert/Rdy active low   (default val)
                     ADS1015_REG_CONFIG_CMODE_TRAD   | // Traditional comparator (default val)
-                    ADS1015_REG_CONFIG_DR_1600SPS   | // 1600 samples per second (default)
-                    ADS1015_REG_CONFIG_MODE_CONTIN  | // Continuous conversion mode
-                    ADS1015_REG_CONFIG_MODE_CONTIN;   // Continuous conversion mode
+                    ADS1015_REG_CONFIG_DR_128SPS   | // 1600 samples per second (default)
+                    ADS1015_REG_CONFIG_MODE_CONTIN ; // continuous conversion
 
   // Set PGA/voltage range
   config |= m_gain;
@@ -370,13 +369,17 @@ void Adafruit_ADS1015::startComparator_SingleEnded(uint8_t channel, int16_t thre
       config |= ADS1015_REG_CONFIG_MUX_SINGLE_3;
       break;
   }
-
+  
   // Set the high threshold register
   // Shift 12-bit results left 4 bits for the ADS1015
-  writeRegister(m_i2cFd, m_i2cAddress, ADS1015_REG_POINTER_HITHRESH, threshold << m_bitShift);
+  writeRegister(m_i2cFd, m_i2cAddress, ADS1015_REG_POINTER_HITHRESH, 0x8000);
+  
+  // set low register 
+  writeRegister(m_i2cFd, m_i2cAddress, ADS1015_REG_POINTER_LOWTHRESH, 0x0000);
 
   // Write config register to the ADC
   writeRegister(m_i2cFd, m_i2cAddress, ADS1015_REG_POINTER_CONFIG, config);
+  std::cout<< "dec config: " <<config<< std::endl;
 }
 
 void Adafruit_ADS1015::updateWiringPiSetup()
@@ -395,11 +398,11 @@ void Adafruit_ADS1015::updateWiringPiSetup()
 int16_t Adafruit_ADS1015::getLastConversionResults()
 {
   // Wait for the conversion to complete
-  usleep(1000*m_conversionDelay);
+  //usleep(1000*m_conversionDelay);
 
   // Read the conversion results
   uint16_t res = readRegister(m_i2cFd, m_i2cAddress, ADS1015_REG_POINTER_CONVERT) >> m_bitShift;
-  if (m_bitShift == 0)
+  /*if (m_bitShift == 0)
   {
     return (int16_t)res;
   }
@@ -411,8 +414,8 @@ int16_t Adafruit_ADS1015::getLastConversionResults()
     {
       // negative number - extend the sign to 16th bit
       res |= 0xF000;
-    }
+    }*/
     return (int16_t)res;
-  }
+  //}
 }
 
