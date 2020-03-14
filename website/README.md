@@ -2,15 +2,29 @@
 
 Website Link: https://tymonherzyk.github.io/PawPulseWeb/
 
-The **PawPulse** website was created to function as an educational space for displaing projects in a professional manner. Using the **PubNub API** the website can also display data aquired from the **PawPulse** hardware in realtime, both visually and graphically. The following scripting languages were used during the construction of the website:
+The **PawPulse** website was created to function as an educational space for displaing projects in a professional manner. Using the **PubNub API** the website can also display data aquired from the **PawPulse** hardware in realtime, both visually and graphically. The website is responsive for smartphones and monitors with built-in layouts for each type. The following scripting languages were used during the construction of the website:
 * HTML
 * CSS
 * Javascript
 
 ## Files
-- `index.html` : 
+- `index.html` : HTML page corresponding to the website's **Home** page.
 
-- `projects.html` : 
+- `projects.html` : HTML page corresponding to the website's **Project** page.
 
-- `liveData.html` : 
+- `liveData.html` : HTML page corresponding to the website's **Live Data** page.
+
+- `style.css` : CSS stylesheet that stores styling commands for all HTML pages.
+
+## File Descriptions
+### Index
+The index.html file is a pure html file that defines the content of the Home page for the PawPulse website. Information is split into several sections classes:
+```
+<section class="index-banner1">
+<section class="index-banner2">
+```
+### Projects
+### Live Data
+### Style
+
 
