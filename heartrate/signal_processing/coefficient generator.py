@@ -3,10 +3,12 @@ import scipy.signal as ss
 
 file = open("hr_coeff.txt","w+")
 
-fs = 1600
-f1 = 95
-f2 = 105
+fs = 50
+f1 = 10
+#f2 = 105
 
-b = ss.firwin(1599,[f1/fs*2,f2/fs*2]);
+B = [f1/fs*2]#,f2/fs*2]
+
+b = ss.firwin((fs*2+1),B, pass_zero = False)#,f2/fs*2]);
 
 np.savetxt("hr_coeff.txt",b,newline = '\n')
