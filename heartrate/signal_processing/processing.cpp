@@ -17,7 +17,7 @@
 #include <cmath> 
 #include <time.h> 
 #include "LSM6DS3.h"
-#include <Fir1.h>
+#include "Fir1.h"
 #include <string.h> 
 #include <thread>
 #define ADC_PIN 3
