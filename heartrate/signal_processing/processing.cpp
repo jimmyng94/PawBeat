@@ -20,9 +20,10 @@
 #include "Fir1.h"
 #include <string.h> 
 #include <thread>
+#include <sstream>
 #define ADC_PIN 3
 //#define ACC_PIN 7
-#define Fs 50
+#define Fs 120
 
 using namespace std; 
 static volatile int counter = 0; 
@@ -36,7 +37,7 @@ static volatile bool threadRunning ;
 Adafruit_ADS1015 ads; 
 LSM6DS3 imu(I2C_MODE, 0x6A);
 
-Fir1 fir;
+Fir1 fir("hr_coeff.dat");
 
 void getSTEP(void){
 	float x = imu.readFloatAccelX();
@@ -59,7 +60,8 @@ void getBPM(void){
     if(upflag == 0){
 	if(t > 0){
 		float bpm = Fs/t*60;
-		_bpm.push_back(bpm)
+		_bpm.push_back(bpm);
+		printf("%d \n", bpm);
 	    }
 	t = 0;
     }
@@ -75,9 +77,9 @@ counter++;
   //SEND BPM TO WEB :)
 }
 
-void writeFIFO(){
+/*void writeFIFO(){
     int fd; 
-    char input[1024]; 
+    const char* input; 
     char * myfifo = "/home/pi/Documents/pawpulse/webinterface/bpm_fifo"; 
     mkfifo(myfifo, 0666); 
     if (mkfifo(myfifo, 0666)<0) {
@@ -92,7 +94,10 @@ void writeFIFO(){
 	// Change this to set input to bpm value JSON format {"eon":{"bpm":intplaceholder}}
 	auto bpm = _bpm.back();
 	_bpm.pop_back(); 
-	input = "{\"eon\":{\"bpm\":" + bpm +"}}" 
+	ostringstream oss;
+	oss << "{\"eon\":{\"bpm\":" << bpm << "}}";
+	string input_s = oss.str();
+	input <<input_s;
 	// Open FIFO for write only 
 	fd = open(myfifo, O_WRONLY); 
 	if (fd==-1) {
@@ -102,7 +107,7 @@ void writeFIFO(){
 		std::cout << "FIFO opened \n";
 	}
 	// Write the input on FIFO 
-	write(fd, input, sizeof(input)); 
+	//write(fd, input, sizeof(input)); 
 	if (write(fd, input, sizeof(input))==-1) {
 		perror("write error");
 	}
@@ -111,18 +116,26 @@ void writeFIFO(){
 	}
 	close(fd); 
     }
-}
+}*/
+/*
  void sendData(){
 	threadRunning  = true;
 	std::thread sending(writeFIFO); 
 	sending.join(); 
 	threadRunning  = false;
 	
- }
+ }*/
+ 
+ void startHeart()
+{
+	counter++;
+	std::thread th0(getBPM);
+	th0.join();
+}
 int main (int,char**)
 {
 	// inits the filter
-	fir("hr_coeff.txt");
+	//fir("hr_coeff.txt");
 	// resets the delay line to zero
 	fir.reset ();
   
@@ -155,19 +168,21 @@ int main (int,char**)
         
 	}  
 	//Interrupt when adc gets new reading
-	if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &getBPM) > 0){ 
+	if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &startHeart) > 0){ 
     		//cout << "INTERRUPT!" << endl; 
   	}
 
   	uint8_t readDataByte = 0;
 		uint16_t stepsTaken = 0;
  while (1){  
-	if (_bpm.empty() == false && threadRunning == false){
+	std::cout<< "main : " << counter << std::endl;
+        usleep(1000000);
+	/*if (_bpm.empty() == false && threadRunning == false){
 		sendData();
 	}
+	//_bpm.push_back(100);
 	/*if(counter%3 == 0){ 
     		getSTEP(); 
   	}		*/
  }
 }
-
