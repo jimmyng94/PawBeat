@@ -28,9 +28,10 @@ static volatile int counter = 0;
 static volatile float bpm = 0;
 static volatile float step = 0;
 static volatile int upflag = 0;
-static volatile int time = 0;
+static volatile int t = 0;
 
-Adafruit_ADS1015 ads; 
+Adafruit_ADS1015 ads;
+Fir1 fir;
 
 void getSTEP(void){
 	float x = readFloatAccelX();
@@ -52,19 +53,20 @@ void getBPM(void){
   float newVal = fir.filter(val);
   if(newVal > 10){
     if(upflag == 0){
-	    if(time > 0){
-      		bpm = fs/time*60;
+	    if(t > 0){
+      		bpm = Fs/t*60;
 	    }
-	time = 0;
+	t = 0;
     }
     upflag = 25;
   }
-  else(){
+  else{
     if(upflag > 0){
       upflag--;
     }
   }
-time++;
+t++;
+counter++;
   //SEND BPM TO WEB :)
   return; 
 }
@@ -72,7 +74,7 @@ time++;
 int main (int,char**)
 {
 	// inits the filter
-	Fir1 fir("coefficients.dat");
+	fir("hr_coeff.txt");
 	// resets the delay line to zero
 	fir.reset ();
   
@@ -134,7 +136,7 @@ LSM6DS3Core imu(I2C_MODE, 0x6B);
     		//cout << "INTERRUPT!" << endl; 
   	}
 
-	if(time%3 == 0){ 
+	if(counter%3 == 0){ 
     		getSTEP(); 
   	}	
  }
