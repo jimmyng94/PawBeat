@@ -18,32 +18,36 @@
 #include <time.h> 
 #include "LSM6DS3.h"
 #include <Fir1.h>
-
+#include <string.h> 
+#include <thread>
 #define ADC_PIN 3
 //#define ACC_PIN 7
 #define Fs 50
 
 using namespace std; 
 static volatile int counter = 0; 
-static volatile float bpm = 0;
+//static volatile float bpm = 0;
 static volatile float step = 0;
 static volatile int upflag = 0;
 static volatile int t = 0;
+vector <float> _bpm;
+static volatile bool threadRunning ;
 
-Adafruit_ADS1015 ads;
+Adafruit_ADS1015 ads; 
+LSM6DS3 imu(I2C_MODE, 0x6A);
+
 Fir1 fir;
 
 void getSTEP(void){
-	float x = readFloatAccelX();
-	float y = readFloatAccelY();
-	float z = readFloatAccelZ();
+	float x = imu.readFloatAccelX();
+	float y = imu.readFloatAccelY();
+	float z = imu.readFloatAccelZ();
 	
 	float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
 	if(mag > 10){
 		step++;
 	}
 //SEND STEP TO WEB :)
-return
 }
 
 void getBPM(void){ 
@@ -53,8 +57,9 @@ void getBPM(void){
   float newVal = fir.filter(val);
   if(newVal > 10){
     if(upflag == 0){
-	    if(t > 0){
-      		bpm = Fs/t*60;
+	if(t > 0){
+		float bpm = Fs/t*60;
+		_bpm.push_back(bpm)
 	    }
 	t = 0;
     }
@@ -68,9 +73,52 @@ void getBPM(void){
 t++;
 counter++;
   //SEND BPM TO WEB :)
-  return; 
 }
 
+void writeFIFO(){
+    int fd; 
+    char input[1024]; 
+    char * myfifo = "/home/pi/Documents/pawpulse/webinterface/bpm_fifo"; 
+    mkfifo(myfifo, 0666); 
+    if (mkfifo(myfifo, 0666)<0) {
+	perror("FIFO status");
+    } 
+    else {
+	perror("mkfifo error");
+    }
+    while(_bpm.size() != 0) {
+	// Take an input from user. 
+	// 80 is maximum length 
+	// Change this to set input to bpm value JSON format {"eon":{"bpm":intplaceholder}}
+	auto bpm = _bpm.back();
+	_bpm.pop_back(); 
+	input = "{\"eon\":{\"bpm\":" + bpm +"}}" 
+	// Open FIFO for write only 
+	fd = open(myfifo, O_WRONLY); 
+	if (fd==-1) {
+		perror("open error");
+	}
+	else {
+		std::cout << "FIFO opened \n";
+	}
+	// Write the input on FIFO 
+	write(fd, input, sizeof(input)); 
+	if (write(fd, input, sizeof(input))==-1) {
+		perror("write error");
+	}
+	else {
+		printf("Message written: %s \n", input);
+	}
+	close(fd); 
+    }
+}
+ void sendData(){
+	threadRunning  = true;
+	std::thread sending(writeFIFO); 
+	sending.join(); 
+	threadRunning  = false;
+	
+ }
 int main (int,char**)
 {
 	// inits the filter
@@ -78,68 +126,48 @@ int main (int,char**)
 	// resets the delay line to zero
 	fir.reset ();
   
-  wiringPiSetup(); 
-  pinMode(INT_PIN, INPUT);
+	wiringPiSetup(); 
+	pinMode(ADC_PIN, INPUT);
   
-  //set up adc
-  ads.begin(); 
-  ads.setGain(GAIN_SIXTEEN);
-//set up acc	
-LSM6DS3Core imu(I2C_MODE, 0x6B);
+	//set up adc
+	ads.begin(); 
+	ads.setGain(GAIN_SIXTEEN);
 
-	if (imu.beginCore() !=0)
-	{
-		printf("Error at beginCore().\n");
-	}
-	else
-	{
-		printf("\nbeginCore() passed.\n");
-	}
+	// setup ADS1015
+	ads.begin();
+	ads.setGain(GAIN_SIXTEEN); 
 
-	uint8_t errorAccumulator =0;
+	//ads.startComparator_SingleEnded(0,0);
+	ads.startComparator_SingleEnded(0, 1000); 
+    
+	if (imu.begin() != 0) 
+	{ 
+		std::cout << "Problem starting the sensor at 0x6A." << std::endl; 
+		return 1;
+	} 
 
-	uint8_t dataToWrite = 0;
-	// setup accelerometer
-	dataToWrite = 0;
-
-	dataToWrite |= LSM6DS3_ACC_GYRO_FS_XL_2g;
-	dataToWrite |= LSM6DS3_ACC_GYRO_ODR_XL_26Hz;
-
-	//Now, write the patched together data
-	errorAccumulator += imu.writeRegister(LSM6DS3_ACC_GYRO_CTRL1_XL, dataToWrite);
-
-	//Set the ODR bit
-	errorAccumulator += imu.readRegister(&dataToWrite, LSM6DS3_ACC_GYRO_CTRL4_C);
-	dataToWrite &= ~((uint8_t)LSM6DS3_ACC_GYRO_BW_SCAL_ODR_ENABLED);
-	
-	// Enable embedded functions -- ALSO clears the pdeo step count
-	errorAccumulator += imu.writeRegister(LSM6DS3_ACC_GYRO_CTRL10_C, 0x3E);
-	// Enable pedometer algorithm
-	errorAccumulator += imu.writeRegister(LSM6DS3_ACC_GYRO_TAP_CFG1, 0x40);
-	// Step Detector interrupt driven to INT1 pin
-	errorAccumulator += imu.writeRegister( LSM6DS3_ACC_GYRO_INT1_CTRL, 0x10 );
-	
-	if( errorAccumulator )
-	{
-		printf("Problem configuring the device.\n");
-	}
-	else
-	{
-		printf("Device O.K.\n");
-	}
-  	uint8_t readDataByte = 0;
-		uint16_t stepsTaken = 0;
- while (1){  
-  	//Interrupt when adc gets new reading
-  	ads.startComparator_SingleEnded(0, 1000); 
-  	if(wiringPiISR(INT_PIN, INT_EDGE_RISING, &getBPM) > 0){ 
+	else 
+	{ 
+		std::cout << "Sensor at 0x6A started." << std::endl; 
+		imu.settings.gyroEnabled =0; 
+		imu.settings.accelRange = 2;  //Max G force readable.  Can be: 2, 4, 8, 16
+		imu.settings.accelSampleRate = 26; //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666, 3332, 6664, 13330
+        
+	}  
+	//Interrupt when adc gets new reading
+	if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &getBPM) > 0){ 
     		//cout << "INTERRUPT!" << endl; 
   	}
 
-	if(counter%3 == 0){ 
+  	uint8_t readDataByte = 0;
+		uint16_t stepsTaken = 0;
+ while (1){  
+	if (_bpm.empty() == false && threadRunning == false){
+		sendData();
+	}
+	/*if(counter%3 == 0){ 
     		getSTEP(); 
-  	}	
+  	}		*/
  }
 }
-
 
