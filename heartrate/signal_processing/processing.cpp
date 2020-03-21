@@ -21,6 +21,7 @@
 #include <string.h> 
 #include <thread>
 #include <sstream>
+
 #define ADC_PIN 3
 //#define ACC_PIN 7
 #define Fs 120
@@ -56,7 +57,8 @@ void getBPM(void){
   float val = ads.getLastConversionResults();  
   //cout << adc0<< endl;
   float newVal = fir.filter(val);
-  if(newVal > 10){
+	newVal = pow(newVal,2);
+  if(newVal > 300){
     if(upflag == 0){
 	if(t > 0){
 		float bpm = Fs/t*60;
@@ -65,7 +67,7 @@ void getBPM(void){
 	    }
 	t = 0;
     }
-    upflag = 25;
+    upflag = Fs/2;
   }
   else{
     if(upflag > 0){
