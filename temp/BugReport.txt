@@ -1,0 +1,17 @@
+ProcessingTest.cpp
+
+- getBPM() NEEDS FIX
+val variable has constant value of 4095
+newVal changes (roughly between 1 and -1) but is always less than 10
+if loop that calculates bpm and runs the _bpm.push_back(bpm); is skipped
+function returns newVal
+issue seems to be that float val = ads.getLastConversionResults(); returns constant value of 4095
+
+- writeBPM() WORKS
+
+- sendData() WORKS
+
+- interrupt NOT TESTED
+
+- main() HALF-WORKS
+sends newVal to website rather than bpm value
