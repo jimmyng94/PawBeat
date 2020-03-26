@@ -53,15 +53,19 @@ void getSTEP(void){
 float getBPM(){ 
   //cout << "Get"; 
   float val = ads.getLastConversionResults();  
+  std::cout<< "val = " << val << std::endl; //val is constant at 4095
   //cout << adc0<< endl;
   float newVal = fir.filter(val);
+  std::cout<< "newVal = " << newVal << std::endl; //new val under 10 so if does not run
   if(newVal > 10){
+	   std::cout<< "upflag = " << upflag << std::endl;
     if(upflag == 0){
+	    std::cout<< "t = " << t << std::endl;
 	if(t > 0){
+		std::cout<< "Fs = " << Fs << std::endl;
 		float bpm = Fs/t*60;
 		_bpm.push_back(bpm);
 		printf("%d \n", bpm);
-		return bpm;
 	    }
 	t = 0;
     }
@@ -74,7 +78,7 @@ float getBPM(){
   }
 t++;
 counter++;
-
+//returns newVal
 }
 
 void writeBPM(){
@@ -178,7 +182,7 @@ int main (int,char**)
 
 	// setup ADS1015
 	ads.begin();
-	ads.setGain(GAIN_EIGHT); 
+	ads.setGain(GAIN_SIXTEEN); 
 
 	//ads.startComparator_SingleEnded(0,0);
 	ads.startComparator_SingleEnded(0, 1000); 
@@ -209,11 +213,11 @@ int main (int,char**)
 	std::cout<< "main : " << counter << std::endl;
         usleep(1000000);
 	std::cout<< "start getBPM" << std::endl;
-	bpm = getBPM();
+	bpm = getBPM(); //getBPM() returns newVal
 	std::cout<< "end getBPM" << std::endl;
 	std::cout<< "bpm = " << bpm << std::endl;
-	_bpm.push_back(bpm);
-	sendData();
+	_bpm.push_back(bpm); //works
+	sendData(); //works
 	
 	//if (_bpm.empty() == false && threadRunning == false){
 	//	sendData();
