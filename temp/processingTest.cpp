@@ -182,7 +182,7 @@ int main (int,char**)
 
 	// setup ADS1015
 	ads.begin();
-	ads.setGain(GAIN_SIXTEEN); 
+	ads.setGain(GAIN_FOUR); 
 
 	//ads.startComparator_SingleEnded(0,0);
 	ads.startComparator_SingleEnded(0, 1000); 
