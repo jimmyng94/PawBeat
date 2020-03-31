@@ -18,15 +18,34 @@ The **PawPulse** website was created to function as an educational space for dis
 
 ## File Descriptions
 ### Index
-The index.html file is a pure html file that defines the content of the Home page for the PawPulse website.
-
-Information is split into several sections classes:
+The **index.html** file is a pure html file that defines the content of the Home page for the PawPulse website. The file follows the standard html format:
 ```
+<html>
+
+  <head>
+  </head>
+  
+  <body>
+    <header></header>
+    <main></main>
+    <footer></footer>
+   </body>
+   
+</html>   
+```
+The `<head></head>` tags contain information such as the title, metadata and stylesheet links.
+
+The `<body></body>` tags contain information that will be displayed on the website.
+
+Information is split into several section classes:
+```
+<section class="title-banner">
 <section class="index-banner1">
 <section class="index-banner2">
 ```
 Each section can be sized and styled within the style.css stylesheet.
-Text is added into each secrion using the appropriated html tags:
+
+Text is added into each section using the appropriate html tags, for example:
 ```
 <h1>
 <h2>
