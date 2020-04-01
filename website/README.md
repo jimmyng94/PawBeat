@@ -17,8 +17,8 @@ The **PawPulse** website was created to function as an educational space for dis
 - `style.css` : CSS stylesheet that stores styling commands for all HTML pages.
 
 ## File Descriptions
-### Index.html
-The **index.html** file is a pure html file that defines the contents of the Home page for the PawPulse website. The file follows the standard html format:
+### index.html
+The **index.html** file is a pure HTML file that defines the contents of the **Home** page for the **PawPulse** website. The file follows a standard html format:
 ```
 <html>
 
@@ -46,11 +46,13 @@ The `<main></main>` tags contain the main content that is displayed.
 The `<footer></footer>` tags contains the bottom navigational menu.
 
 
-Information is split into several section classes:
+Information is split into several section and div classes:
 ```
 <section class="title-banner">
 <section class="index-banner1">
 <section class="index-banner2">
+<div class="footer-license">
+<div class="footer-social">
 ```
 Text is added into each section using the appropriate html tags, for example:
 ```
@@ -60,8 +62,14 @@ Text is added into each section using the appropriate html tags, for example:
 <a>
 ```
 Sections and text are all sized and styled individually using the **style.css** file. 
-### Projects
-### Live Data
-### Style
+### projects.html
+### liveData.html
+The **liveData.html** file is a HTML and Javascript file that defines the contents of the **Live Data** page for the **PawPulse** website. The file utilises the **PubNub API** in order to display data in realtime. The data is aquired from the **PawPulse** hardware using processing.cpp and sent to the website using sendData.cpp. More information on these file can be found at (link1) and (link2) respectively.
+
+The HTML format of this file follows that of the **index.html** file as shown above.
+
+The `<script></script>` tags are intorduced in **liveData.html** in order to allow embedded Javascript. 
+
+### style.css
 
 
