@@ -67,7 +67,8 @@ void getBPM(void){
   //cout << adc0<< endl;
   float newVal = fir.filter(val);
   cout << newVal << endl;
-  if(newVal > 10){
+  newVal = newVal*newVal;
+  if(newVal > 2000){
     if(upflag == 0){
 	if(t > 0){
 		float bpm = Fs/t*60;
