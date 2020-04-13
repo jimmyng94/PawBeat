@@ -66,18 +66,18 @@ void getBPM(void){
 	}
   //cout << adc0<< endl;
   float newVal = fir.filter(val);
-  cout << newVal << endl;
-  newVal = newVal*newVal;
-  if(newVal > 2000){
+  //cout << newVal << endl;
+  newVal = pow(newVal,2);
+  if(newVal > 300){
     if(upflag == 0){
 	if(t > 0){
 		float bpm = Fs/t*60;
 		_bpm.push_back(bpm);
-		//printf("%d \n", bpm);
+		printf("%d \n", bpm);
 	    }
 	t = 0;
     }
-    upflag = 25;
+    upflag = 60;
   }
   else{
     if(upflag > 0){
