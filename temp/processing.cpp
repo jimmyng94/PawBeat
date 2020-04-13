@@ -26,17 +26,18 @@
 #define Fs 120
 
 using namespace std; 
+bool simulate =true;
 static volatile int counter = 0; 
 //static volatile float bpm = 0;
 static volatile float step = 0;
 static volatile int upflag = 0;
 static volatile int t = 0;
 vector <float> _bpm;
+std::vector<int> arr;
 static volatile bool threadRunning ;
 
 Adafruit_ADS1015 ads; 
 LSM6DS3 imu(I2C_MODE, 0x6A);
-
 Fir1 fir("hr_coeff.dat");
 
 void getSTEP(void){
@@ -50,21 +51,35 @@ void getSTEP(void){
 	}
 }
 
-void getBPM(void){ 
+void getBPM(void){
+	 float val;
   //cout << "Get"; 
-  float val = ads.getLastConversionResults();  
-  //cout << adc0<< endl;
+	if (simulate == false){ 
+		val = ads.getLastConversionResults();  
+	}
+	else
+	{	
+		if (arr.empty() == false){ 
+			val = arr.back();
+			arr.pop_back(); 
+		}
+	}
+ // cout << val << endl;
   float newVal = fir.filter(val);
-  if(newVal > 10){
+  //cout << newVal << endl;
+  newVal = pow(newVal,2);
+  //cout << newVal << endl;
+  if(newVal > 300){
     if(upflag == 0){
 	if(t > 0){
-		float bpm = Fs/t*60;
+		float bpm = 120.0/t*60.0;
 		_bpm.push_back(bpm);
-		printf("%d \n", bpm);
+		cout << bpm << endl;
+		//printf("%d \n", bpm);
 	    }
-	t = 0;
+	t = 1;
     }
-    upflag = 25;
+    upflag = 60;
   }
   else{
     if(upflag > 0){
@@ -73,8 +88,10 @@ void getBPM(void){
   }
 t++;
 counter++;
-}
+//cout<< "counter :"<< counter << endl;
 
+}
+/*
 void writeBPM(){
     int fd; 
     const char* bpmMsg; 
@@ -108,7 +125,7 @@ void writeBPM(){
 		close(fd); 
 		printf("bpm_fifo closed \n");
     }
-}
+}*/
 /*
 void writeSTEP(){
     int fd; 
@@ -145,14 +162,14 @@ void writeSTEP(){
     }
 }*/
 
-
+/*
  void sendData(){
 	threadRunning  = true;
 	std::thread sending(writeBPM); 
 	sending.join(); 
 	threadRunning  = false;
 	
- }
+ }*/
  
  void startHeart()
 {
@@ -162,55 +179,68 @@ void writeSTEP(){
 }
 int main (int,char**)
 {
+	
 	// inits the filter
 	//fir("hr_coeff.txt");
 	// resets the delay line to zero
 	fir.reset ();
+	if (simulate == false){
+		 
+		wiringPiSetup(); 
+		pinMode(ADC_PIN, INPUT);
   
-	wiringPiSetup(); 
-	pinMode(ADC_PIN, INPUT);
-  
-	//set up adc
-	ads.begin(); 
-	ads.setGain(GAIN_SIXTEEN);
+		//set up adc/ADS
+		ads.begin(); 
+		ads.setGain(GAIN_FOUR);
 
-	// setup ADS1015
-	ads.begin();
-	ads.setGain(GAIN_SIXTEEN); 
-
-	//ads.startComparator_SingleEnded(0,0);
-	ads.startComparator_SingleEnded(0, 1000); 
+		//ads.startComparator_SingleEnded(0,0);
+		ads.startComparator_SingleEnded(0, 1000); 
     
-	if (imu.begin() != 0) 
-	{ 
-		std::cout << "Problem starting the sensor at 0x6A." << std::endl; 
-		return 1;
-	} 
+		if (imu.begin() != 0) 
+		{ 
+			std::cout << "Problem starting the sensor at 0x6A." << std::endl; 
+			return 1;
+		} 
 
-	else 
-	{ 
-		std::cout << "Sensor at 0x6A started." << std::endl; 
-		imu.settings.gyroEnabled =0; 
-		imu.settings.accelRange = 2;  //Max G force readable.  Can be: 2, 4, 8, 16
-		imu.settings.accelSampleRate = 26; //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666, 3332, 6664, 13330
+		else 
+		{ 
+			std::cout << "Sensor at 0x6A started." << std::endl; 
+			imu.settings.gyroEnabled =0; 
+			imu.settings.accelRange = 2;  //Max G force readable.  Can be: 2, 4, 8, 16
+			imu.settings.accelSampleRate = 26; //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666, 3332, 6664, 13330
         
-	}  
-	//Interrupt when adc gets new reading
-	if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &startHeart) > 0){ 
-    		cout << "INTERRUPT!" << endl; 
-  	}
-
-  	uint8_t readDataByte = 0;
-		uint16_t stepsTaken = 0;
- while (1){  
-	std::cout<< "main : " << counter << std::endl;
-        usleep(1000000);
-	if (_bpm.empty() == false && threadRunning == false){
-		sendData();
+		}  
+		//Interrupt when adc gets new reading
+		if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &startHeart) > 0){ 
+			cout << "INTERRUPT!" << endl; 
+		}
 	}
+	else{
+		
+		std::ifstream file_handler("heartRate.txt");
+
+		// use a std::vector to store your items.  It handles memory allocation automatically.
+		
+		int number;
+
+		while (file_handler>>number) {
+			arr.push_back(number);
+
+			// ignore anything else on the line
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+	cout<<arr.empty()<< endl;
+	
+	}
+	while (arr.empty() == false){  
+		// calling get bpm at 120sps
+		int sleepTime = 1000000/120;
+		usleep(sleepTime);
+		getBPM();
+	}
+	return 0;
 	//getBPM();
 	/*if(counter%3 == 0){ 
     		getSTEP(); 
   	}		*/
  }
-}
