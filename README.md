@@ -4,7 +4,7 @@
 PawPulse is an [open-source](https://github.com/jimmyng94/PawPulse/blob/master/LICENSE) pet health monitoring project developed in University Of Glasgow using a Raspberry Pi. The main functions that the project provide are:
 - Heartbeat Monitoring
 - Pedometer
-- Live data display through the [website](https://tymonherzyk.github.io/PawPulseWeb/).
+- Live data display through a [website](https://tymonherzyk.github.io/PawPulseWeb/)
 
 Currently, the development of the project is only intended to be used on a dog. Usage on other pets will require further testing.
 
@@ -22,11 +22,11 @@ The PCB is split into 2 individual boards. The 1st board is a PiHat where the [I
 The details and complete guide of the project could be found on our [Github Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
 ## Additional Functionality
-This is just a recommendation of possible functions that could be added in the future: 
-- Live heartbeat playback. This allows the owner to hear their pets heartbeat and make it more convenient for the vet to monitor pets.
-- GPS tracking.
-- Health diagnosis and recommendation. 
-- Phone application development for convenience.  
+Recommendations of possible functions that could be added in the future: 
+- Live heartbeat playback allowing the owner to hear their pet's heartbeat and make it more convenient for a veterinarian to monitor pets
+- GPS tracking
+- Health diagnoses and recommendations
+- Phone application development for convenience
 
 ## Social Media
 
@@ -39,5 +39,5 @@ This is just a recommendation of possible functions that could be added in the f
 - [Tymon Herzyk](https://github.com/tymonherzyk)
 
 ## Disclaimer
-Disruption due to COVID-19 has prohibited us from running any actual test on our test dog. Thus, this project is not guaranteed to work on a dog. Testing was only done using a human heartbeat that was collected before the disruption. We hope that we will be able to test it on a real pet and collect more data to improve our algorithm. Thank you for your understanding.
+Disruption due to COVID-19 has prohibited us from running any actual tests on our test dog. Thus, this project is not guaranteed to work on a dog. Testing was only done using a human heartbeat that was collected before the disruption. In the future we hope to be able to test it on a real pet and collect more data to improve our algorithm. Thank you for your understanding.
 
