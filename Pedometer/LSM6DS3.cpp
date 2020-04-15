@@ -511,7 +511,7 @@ status_t LSM6DS3::begin(SensorSettings* pSettingsYouWanted)
 	//Setup the internal temperature sensor
 	if ( settings.tempEnabled == 1) {
 	}
-	WriteRegister(LSM6DS3_ACC_GYRO_INT1_CTRL ,0x10);
+	writeRegister(LSM6DS3_ACC_GYRO_INT1_CTRL ,0x10);
 	//Return WHO AM I reg  //Not no mo!
 	uint8_t result;
 	readRegister(&result, LSM6DS3_ACC_GYRO_WHO_AM_I_REG);

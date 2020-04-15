@@ -26,7 +26,9 @@
 #define Fs 120
 
 using namespace std; 
+
 bool simulate = true;
+
 static volatile int counter = 0; 
 //static volatile float bpm = 0;
 static volatile float step = 0;
@@ -64,18 +66,26 @@ void getBPM(void){
 			arr.pop_back(); 
 		}
 	}
-  //cout << adc0<< endl;
+
   float newVal = fir.filter(val);
-  //cout << newVal << endl;
+  float bpm = 0;
+
   newVal = pow(newVal,2);
+
   if(newVal > 300){
     if(upflag == 0){
 	if(t > 0){
-		float bpm = Fs/t*60;
+		float new_bpm = 120.0/t*60.0;
 		_bpm.push_back(bpm);
-		printf("%d \n", bpm);
+		
+		if(new_bpm > 30){
+			bpm = new_bpm;
+		}
+		
+		cout << bpm << endl;
+		//printf("%d \n", bpm);
 	    }
-	t = 0;
+	t = 1;
     }
     upflag = 60;
   }
@@ -87,6 +97,7 @@ void getBPM(void){
 t++;
 counter++;
 //cout<< "counter :"<< counter << endl;
+
 }
 /*
 void writeBPM(){
@@ -214,6 +225,7 @@ int main (int,char**)
 	}
 	else{
 		
+
 		//std::ifstream file_handler("ads_120_A.txt");
 		std::ifstream file_handler("ads_120_C.txt");
 
