@@ -21,8 +21,8 @@
 #include <string.h> 
 #include <thread>
 #include <sstream>
-#define ADC_PIN 3
-//#define ACC_PIN 7
+#define ADC_PIN 3	//input pin for ADC for microphone
+#define ACC_PIN 7	//input pin for accelerometer
 #define Fs 120
 
 using namespace std; 
