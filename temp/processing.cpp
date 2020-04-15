@@ -83,7 +83,7 @@ void getBPM(void){
 		}
 		
 		cout << bpm << endl;
-		//printf("%d \n", bpm);
+		
 	    }
 	t = 1;
     }
