@@ -214,7 +214,8 @@ int main (int,char**)
 	}
 	else{
 		
-		std::ifstream file_handler("heartRate.txt");
+		//std::ifstream file_handler("ads_120_A.txt");
+		std::ifstream file_handler("ads_120_C.txt");
 
 		// use a std::vector to store your items.  It handles memory allocation automatically.
 		
