@@ -26,7 +26,9 @@
 #define Fs 120
 
 using namespace std; 
-bool simulate =true;
+
+bool simulate = true;
+
 static volatile int counter = 0; 
 //static volatile float bpm = 0;
 static volatile float step = 0;
@@ -64,12 +66,12 @@ void getBPM(void){
 			arr.pop_back(); 
 		}
 	}
- // cout << val << endl;
+
   float newVal = fir.filter(val);
   float bpm = 0;
-  //cout << newVal << endl;
+
   newVal = pow(newVal,2);
-  //cout << newVal << endl;
+
   if(newVal > 300){
     if(upflag == 0){
 	if(t > 0){
@@ -223,7 +225,9 @@ int main (int,char**)
 	}
 	else{
 		
-		std::ifstream file_handler("heartRate.txt");
+
+		//std::ifstream file_handler("ads_120_A.txt");
+		std::ifstream file_handler("ads_120_C.txt");
 
 		// use a std::vector to store your items.  It handles memory allocation automatically.
 		
