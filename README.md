@@ -29,6 +29,7 @@ Recommendations of possible functions that could be added in the future:
 - Live heartbeat playback allowing the owner to hear their pet's heartbeat and make it more convenient for a veterinarian to monitor pets
 - GPS tracking
 - Health diagnoses and recommendations
+- Personalised website login so each user can view data separately
 - Phone application development for convenience
 
 ## Social Media
