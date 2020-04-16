@@ -22,12 +22,19 @@ The PawPulse software is split into two main files "processing" and "sendDataCli
 
 ![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/media/macroSoftwareArchitecture.PNG?raw=true)
 
-For further information about our software and a full installation guide please refer to our [wiki](https://github.com/jimmyng94/PawPulse/wiki) pages.
+For further information about our software and a full installation guide please refer to the PawPulse [wiki](https://github.com/jimmyng94/PawPulse/wiki).
 
 #### Website
-![Web Image]( )
+A website has been built in order to test the web capabilities of this the project. The website has been design to function as a profesional space in which the data from the PawPulse system can be displayed to users in real-time. The website has been built using HTML, CSS and JavaScript. To display data in real-time it utlises libraries such as the PubNub API and EON. The website has also been built to be responsive and hence can be viewd safley on phone and monitors. Example pictures from the "Live Data" page are given below:
 
-[Website link](https://tymonherzyk.github.io/PawPulseWeb/)
+![Web Monitor](https://github.com/jimmyng94/PawPulse/blob/master/media/websiteMonitor.PNG?raw=true)
+
+![Web Phone](https://github.com/jimmyng94/PawPulse/blob/master/media/websitePhone.PNG?raw=true)
+
+The PawPulse website is hosted at https://tymonherzyk.github.io/PawPulseWeb/
+
+Further information on use of the website and advanced guides on how the website was defined please refer to the PawPulse [wiki](https://github.com/jimmyng94/PawPulse/wiki).
+
 #### Guide
 The details and complete guide of the project could be found on our [Github Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
@@ -40,14 +47,13 @@ Recommendations of possible functions that could be added in the future:
 - Phone application development for convenience
 
 ## Social Media
-
 - [Instagram](https://www.instagram.com/paw_pulse/)
 - [Twitter](https://twitter.com/paw_pulse)
 
 ## Authors 
-- [Maggie Wood](https://github.com/maggwood)
-- [Ng Jing Ming](https://github.com/jimmyng94)
-- [Tymon Herzyk](https://github.com/tymonherzyk)
+- [Maggie Wood](https://github.com/maggwood)n-
+- [Ng Jing Ming](https://github.com/jimmyng94) -
+- [Tymon Herzyk](https://github.com/tymonherzyk) - WebClient and Website author
 
 ## Disclaimer
 Disruption due to COVID-19 has prohibited us from running any actual tests on our test dog. Thus, this project is not guaranteed to work on a dog. Testing was only done using a human heartbeat that was collected before the disruption. In the future we hope to be able to test it on a real pet and collect more data to improve our algorithm. Thank you for your understanding.
