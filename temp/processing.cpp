@@ -127,7 +127,7 @@ void getBPM(void){
     }
   }
 t++;
-counter++;
+//counter++;
 //cout<< "counter :"<< counter << endl;
 
 }
@@ -213,9 +213,11 @@ void writeSTEP(){
  
  void startHeart()
 {
-	counter++;
+	//counter++;
 	std::thread th0(getBPM);
 	th0.join();
+	std::thread th1(getStep);
+	th1.join();
 }
 int main (int,char**)
 {
@@ -267,6 +269,37 @@ int main (int,char**)
 
 		while (file_handler>>number) {
 			arr.push_back(number);
+
+			// ignore anything else on the line
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			
+	//Send simulated data to getStep function
+			std::ifstream file_handler("3x.txt");
+		
+		int number;
+
+		while (file_handler>>number) {
+			acc_x.push_back(number);
+
+			// ignore anything else on the line
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			
+		std::ifstream file_handler("3y.txt");
+		
+		int number;
+
+		while (file_handler>>number) {
+			acc_y.push_back(number);
+
+			// ignore anything else on the line
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			
+		std::ifstream file_handler("3Z.txt");
+		
+		int number;
+
+		while (file_handler>>number) {
+			acc_z.push_back(number);
 
 			// ignore anything else on the line
 			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
