@@ -35,7 +35,10 @@ static volatile float step = 0;
 static volatile int upflag = 0;
 static volatile int t = 0;
 vector <float> _bpm;
-std::vector<int> arr;
+std::vector<int> arr;	//handles simulated adc data
+std::vector<int> acc_x;	//handles simulated acc data
+std::vector<int> acc_y;
+std::vector<int> acc_z;
 static volatile bool threadRunning ;
 
 Adafruit_ADS1015 ads; 
@@ -43,13 +46,18 @@ LSM6DS3 imu(I2C_MODE, 0x6A);
 Fir1 fir("hr_coeff.dat");
 
 void getSTEP(void){
-	float x = imu.readFloatAccelX();
-	float y = imu.readFloatAccelY();
-	float z = imu.readFloatAccelZ();
+	float x;
+	float y;
+	float z;
+	if(simulate == false){
+		x = imu.readFloatAccelX();
+		y = imu.readFloatAccelY();
+		z = imu.readFloatAccelZ();
 	
-	float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
-	if(mag > 10){
-		step++;
+		float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
+		if(mag > 10){
+			step++;
+		}
 	}
 }
 
@@ -225,7 +233,7 @@ int main (int,char**)
 	}
 	else{
 		
-
+	//Send simulated data to getBPM function
 		//std::ifstream file_handler("ads_120_A.txt");
 		std::ifstream file_handler("ads_120_C.txt");
 
@@ -249,8 +257,4 @@ int main (int,char**)
 		getBPM();
 	}
 	return 0;
-	//getBPM();
-	/*if(counter%3 == 0){ 
-    		getSTEP(); 
-  	}		*/
  }
