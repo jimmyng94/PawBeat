@@ -46,7 +46,7 @@ Adafruit_ADS1015 ads;
 LSM6DS3 imu(I2C_MODE, 0x6A);
 Fir1 fir("hr_coeff.dat");
 
-void getSTEP(void){
+void getStep(void){
 	float x;
 	float y;
 	float z;
@@ -271,32 +271,32 @@ int main (int,char**)
 			arr.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
 	//Send simulated data to getStep function
 			std::ifstream file_handler("3x.txt");
 		
-		int number;
+		//int number;
 
 		while (file_handler>>number) {
 			acc_x.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
 		std::ifstream file_handler("3y.txt");
 		
-		int number;
+		//int number;
 
 		while (file_handler>>number) {
 			acc_y.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
 		std::ifstream file_handler("3Z.txt");
 		
-		int number;
+		//int number;
 
 		while (file_handler>>number) {
 			acc_z.push_back(number);
