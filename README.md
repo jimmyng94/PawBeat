@@ -38,15 +38,7 @@ Further information as well as indepth installation and development guides for t
 In order to install and run our software the following steps must be undertaken:
 
 #### 1. Clone PawPulse github repository
-On the main repository page, click the green "Clone or Download" button
-
-![Git Clone](https://github.com/jimmyng94/PawPulse/blob/master/media/githubClone.PNG?raw=true)
-
-Copy the address that drops down
-
-![Git Address](https://github.com/jimmyng94/PawPulse/blob/master/media/githubLink.PNG?raw=true)
-
-In your chosen directory on the Raspberry Pi terminal, type the following
+On the main repository page, click the green "Clone or Download" button, copy the address that drops down and in your chosen directory on the Raspberry Pi terminal, type the following:
 ```
 git clone *copied address*
 ```
