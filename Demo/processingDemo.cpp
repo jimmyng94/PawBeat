@@ -90,7 +90,7 @@ void getBPM(void){
 void writeBPM(){
 	int fd; 
 	const char* bpmMsg; 
-	char * bpm_fifo = "/home/pi/Documents/pawpulse/webinterface/bpm_fifo"; 
+	char * bpm_fifo = "../webClient/sendDataClient/bpm_fifo"; 
 	mkfifo(bpm_fifo, 0666);
 	while(_bpm.size() != 0) {
 		auto bpm = _bpm.back();
@@ -121,7 +121,7 @@ void writeBPM(){
 void writeSTEP(){
     int fd; 
     const char* stepMsg; 
-    char * step_fifo = "/home/pi/Documents/pawpulse/webinterface/step_fifo"; 
+    char * step_fifo = "../webClient/sendDataClient/step_fifo"; 
     if (mkfifo(step_fifo, 0666)<0) {
 	perror("step_fifo status");
     } 
