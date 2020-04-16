@@ -307,17 +307,17 @@ int main (int,char**)
 	cout<< arr.empty() << endl;
 	
 	}
-	while (arr.empty() == false){  
+	int count = 0;		
+	while (arr.empty() == false){
+		count++;
 		// calling get bpm at 120sps
 		int sleepTime = 1000000/120;
 		usleep(sleepTime);
 		getBPM();
-	}
-	while (acc_x.empty() == false){  
-		// calling get step at 26sps
-		int sleepTime = 1000000/26;
-		usleep(sleepTime);
-		getStep();
+		if(count == 5 && acc_x.empty() == false){
+			getStep();
+			count = 0;
+		}
 	}
 	return 0;
  }
