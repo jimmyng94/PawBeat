@@ -33,6 +33,7 @@ static volatile int counter = 0;
 //static volatile float bpm = 0;
 static volatile float step = 0;
 static volatile int upflag = 0;
+static volatile int stepflag = 0;
 static volatile int t = 0;
 vector <float> _bpm;
 std::vector<int> arr;	//handles simulated adc data
@@ -53,12 +54,34 @@ void getSTEP(void){
 		x = imu.readFloatAccelX();
 		y = imu.readFloatAccelY();
 		z = imu.readFloatAccelZ();
-	
-		float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
-		if(mag > 10){
-			step++;
+	}
+	else{
+		if (acc_x.empty() == false){ 
+			x = acc_x.back();
+			acc_x.pop_back(); 
+			
+			y = acc_y.back();
+			acc_y.pop_back();
+			
+			z = acc_z.back();
+			acc_z.pop_back();
 		}
 	}
+	float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
+	if(mag > 1.2){
+		if(stepflag == 0){
+			step++;
+			cout << "STEP: ";
+			cout << step << endl;
+		}
+		stepflag  = 5;
+	}
+	else{
+		if(stepflag > 0){
+			stepflag--;
+		}
+	}
+	
 }
 
 void getBPM(void){
@@ -90,6 +113,7 @@ void getBPM(void){
 			bpm = new_bpm;
 		}
 		
+		cout << "BPM: ";
 		cout << bpm << endl;
 		//printf("%d \n", bpm);
 	    }
@@ -247,7 +271,7 @@ int main (int,char**)
 			// ignore anything else on the line
 			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
-	cout<<arr.empty()<< endl;
+	cout<< arr.empty() << endl;
 	
 	}
 	while (arr.empty() == false){  
@@ -255,6 +279,12 @@ int main (int,char**)
 		int sleepTime = 1000000/120;
 		usleep(sleepTime);
 		getBPM();
+	}
+	while (acc_x.empty() == false){  
+		// calling get step at 26sps
+		int sleepTime = 1000000/26;
+		usleep(sleepTime);
+		getStep();
 	}
 	return 0;
  }
