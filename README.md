@@ -22,8 +22,6 @@ The PawPulse software is split into two main files "processing" and "sendDataCli
 
 ![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/media/macroSoftwareArchitecture.PNG?raw=true)
 
-For further information about our software and a full installation guide please refer to the PawPulse [wiki](https://github.com/jimmyng94/PawPulse/wiki).
-
 #### Website
 A website has been built in order to test the web capabilities of this the project. The website has been design to function as a profesional space in which the data from the PawPulse system can be displayed to users in real-time. The website has been built using HTML, CSS and JavaScript. To display data in real-time it utlises libraries such as the PubNub API and EON. The website has also been built to be responsive and hence can be viewd safley on phone and monitors. Example pictures from the "Live Data" page are given below:
 
@@ -33,10 +31,69 @@ A website has been built in order to test the web capabilities of this the proje
 
 The PawPulse website is hosted at https://tymonherzyk.github.io/PawPulseWeb/
 
-Further information on use of the website and advanced guides on how the website was defined please refer to the PawPulse [wiki](https://github.com/jimmyng94/PawPulse/wiki).
+#### Guides
+Further information as well as indepth installation and development guides for this project can be found on our Github [Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
-#### Guide
-The details and complete guide of the project could be found on our [Github Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
+## Quick Installation
+In order to install and run our software the following steps must be undertaken:
+
+#### 1. Clone PawPulse github repository
+On the main repository page, click the green "Clone or Download" button
+
+![Git Clone](https://github.com/jimmyng94/PawPulse/blob/master/media/githubClone.PNG?raw=true)
+
+Copy the address that drops down
+
+![Git Address](https://github.com/jimmyng94/PawPulse/blob/master/media/githubLink.PNG?raw=true)
+
+In your chosen directory on the Raspberry Pi terminal, type the following
+```
+git clone *copied address*
+```
+#### 2. Clone required libraries
+Clone the required libraries in the correct destinations using the same process as above:
+* ADS1\*15 Library
+* Fir1 Library
+* PubNub c-core
+* SparkFun blah Library
+* WiringPi
+
+A list of library destinations and where to find each library is available on our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation)
+
+#### 3. Install required libraries
+Install the required libraries listed above. This can be done using:
+```
+cmake .
+make
+sudo make install
+sudo ldconfig
+```
+_PubNub c-core does not require to be installed_
+
+A full walkthrough on library installation is available on our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation)
+
+#### 4. Make the processing.cpp executable
+To make the processing.cpp executable navigate into the ? folder. This folder should have the following files:
+* processing.cpp
+* CMakeLists.txt
+Once in this directory run the following code:
+```
+cmake .
+make
+```
+A new executable with the name "processing" should now be available in this directory.
+
+_If you want to make the processing demonstartion simply navigate to the demo folder and run the same code. This should make processingDemo._
+
+#### 5. Make the sendDataClient.cpp executable
+To make the sendDataClient.cpp executable navigate into the sendDataClient folder. This folder should have the following files:
+* sendDataClient.cpp
+* sendDataClient.mk
+Once in this directory run the following code:
+```
+make -f sendDataClient.mk
+```
+A new executable with the name "sendDataClient" should now be available in this directory.
 
 ## Additional Functionality
 Recommendations of possible functions that could be added in the future: 
