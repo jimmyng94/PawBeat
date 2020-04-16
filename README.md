@@ -35,57 +35,39 @@ The PawPulse website is hosted at https://tymonherzyk.github.io/PawPulseWeb/
 Further information as well as indepth installation and development guides for this project can be found on our Github [Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
 ## Quick Installation
-In order to install and run our software the following steps must be undertaken:
+A full in-depth installation guide is available in our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation).
 
 #### 1. Clone PawPulse github repository
 On the main repository page, click the green "Clone or Download" button, copy the address that drops down and in your chosen directory on the Raspberry Pi terminal, type the following:
 ```
 git clone *copied address*
 ```
-#### 2. Clone required libraries
-Clone the required libraries in the correct destinations using the same process as above:
-* ADS1\*15 Library
+#### 2. Install required libraries
+Install the required libraries in the correct destinations:
+* ADS1015 Library
 * Fir1 Library
 * PubNub c-core
 * SparkFun blah Library
 * WiringPi
 
-A list of library destinations and where to find each library is available on our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation)
-
-#### 3. Install required libraries
-Install the required libraries listed above. This can be done using:
-```
-cmake .
-make
-sudo make install
-sudo ldconfig
-```
-_PubNub c-core does not require to be installed_
-
-A full walkthrough on library installation is available on our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation)
-
-#### 4. Make the processing.cpp executable
-To make the processing.cpp executable navigate into the ? folder. This folder should have the following files:
-* processing.cpp
-* CMakeLists.txt
-Once in this directory run the following code:
+#### 3. Make the processing.cpp executable
+To make the processing executable file navigate into the ? folder. Once in this folder run the following code:
 ```
 cmake .
 make
 ```
-A new executable with the name "processing" should now be available in this directory.
+A new executable with the name "processing" should now be available in this folder.
 
-_If you want to make the processing demonstartion simply navigate to the demo folder and run the same code. This should make processingDemo._
+_If you want to make the processing demonstartion execuatble file simply navigate to the demo folder and run the same code. This will make processingDemo executable file._
 
-#### 5. Make the sendDataClient.cpp executable
-To make the sendDataClient.cpp executable navigate into the sendDataClient folder. This folder should have the following files:
-* sendDataClient.cpp
-* sendDataClient.mk
-Once in this directory run the following code:
+#### 4. Make the sendDataClient.cpp executable
+To make the sendDataClient executable file navigate into the sendDataClient folder Once in this directory run the following code:
 ```
 make -f sendDataClient.mk
 ```
-A new executable with the name "sendDataClient" should now be available in this directory.
+A new executable with the name "sendDataClient" should now be available in this folder.
+
+#### 5. Run software
 
 ## Additional Functionality
 Recommendations of possible functions that could be added in the future: 
