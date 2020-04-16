@@ -17,10 +17,17 @@ All the sensors along with the raspberry will be attached to a dog harness to co
 
 ![img8](https://github.com/jimmyng94/PawPulse/blob/master/media/image8.jpeg?raw=true)
 
-#### Web Interface
+#### Software
+The PawPulse software is split into two main files "processing" and "sendDataClient". The "processing" software is responsible for aquiring data for heartbeat and steps from the corresponding hardware. Once the data has been aquired through the "getBPM" and "getSTEP" functions it is then passed to the "writeBPM" and "writeSTEP" functions. These function sort the data into the correct JSON format and passes this data to the "sendDataClient" through named pipes "bpm_fifo" and "step_fifo". The "sendDataClient" is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
+
+![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/media/macroSoftwareArchitecture.PNG?raw=true)
+
+For further information about our software and a full installation guide please refer to our [wiki](https://github.com/jimmyng94/PawPulse/wiki) pages.
+
+#### Website
 ![Web Image]( )
 
-[Website](https://tymonherzyk.github.io/PawPulseWeb/)
+[Website link](https://tymonherzyk.github.io/PawPulseWeb/)
 #### Guide
 The details and complete guide of the project could be found on our [Github Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
