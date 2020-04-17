@@ -261,59 +261,61 @@ int main (int,char**)
 		
 	//Send simulated data to getBPM function
 		//std::ifstream file_handler("ads_120_A.txt");
-		std::ifstream file_handler("ads_120_C.txt");
+		std::ifstream arr_handler("ads_120_C.txt");
 
 		// use a std::vector to store your items.  It handles memory allocation automatically.
 		
 		int number;
 
-		while (file_handler>>number) {
+		while (arr_handler>>number) {
 			arr.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
+			arr_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
 	//Send simulated data to getStep function
-			std::ifstream file_handler("3x.txt");
+			std::ifstream accx_handler("3x.txt");
 		
 		//int number;
 
-		while (file_handler>>number) {
+		while (accx_handler>>number) {
 			acc_x.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
+			accx_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
-		std::ifstream file_handler("3y.txt");
+		std::ifstream accy_handler("3y.txt");
 		
 		//int number;
 
-		while (file_handler>>number) {
+		while (accy_handler>>number) {
 			acc_y.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
+			accy_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
-		std::ifstream file_handler("3Z.txt");
+		std::ifstream accz_handler("3Z.txt");
 		
 		//int number;
 
-		while (file_handler>>number) {
+		while (accz_handler>>number) {
 			acc_z.push_back(number);
 
 			// ignore anything else on the line
-			file_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			accz_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
 	cout<< arr.empty() << endl;
 	
 	}
 	int count = 0;		
-	while (arr.empty() == false){
+	while (arr.empty() == false || acc_x.empty() == false){
 		count++;
 		// calling get bpm at 120sps
 		int sleepTime = 1000000/120;
 		usleep(sleepTime);
-		getBPM();
+		if(arr.empty() == false){
+			getBPM();
+		}
 		if(count == 5 && acc_x.empty() == false){
 			getStep();
 			count = 0;
