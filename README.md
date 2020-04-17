@@ -1,7 +1,7 @@
 # PawPulse
 ![logo](https://github.com/jimmyng94/PawPulse/blob/master/PPLogo.png?raw=true)
 
-PawPulse is an [open-source](https://github.com/jimmyng94/PawPulse/blob/master/LICENSE) pet health monitoring project developed in University Of Glasgow using a Raspberry Pi. The main functions that the project provide are:
+PawPulse is an [open-source](https://github.com/jimmyng94/PawPulse/blob/master/LICENSE) pet health monitoring project developed by Engineering MSc students at the University Of Glasgow using a Raspberry Pi. The main functions that the project provide are:
 - Heartbeat Monitoring
 - Pedometer
 - Live data display through a [website](https://tymonherzyk.github.io/PawPulseWeb/)
@@ -18,12 +18,12 @@ All the sensors along with the raspberry will be attached to a dog harness to co
 ![img8](https://github.com/jimmyng94/PawPulse/blob/master/media/image8.jpeg?raw=true)
 
 #### Software
-The PawPulse software is split into two main files "processing" and "sendDataClient". The "processing" software is responsible for aquiring data for heartbeat and steps from the corresponding hardware. Once the data has been aquired through the "getBPM" and "getSTEP" functions it is then passed to the "writeBPM" and "writeSTEP" functions. These function sort the data into the correct JSON format and passes this data to the "sendDataClient" through named pipes "bpm_fifo" and "step_fifo". The "sendDataClient" is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
+The PawPulse software is split into two main files: `processing` and `sendDataClient`. The `processing` file is responsible for aquiring data for the dog's heartbeat and steps from the corresponding hardware. Once the data has been aquired through the `getBPM` and `getStep` functions it is then passed to the `writeBPM` and `writeSTEP` functions. These functions sort the data into the correct JSON format and pass it to the `sendDataClient` file through named pipes `bpm_fifo` and `step_fifo`. The `sendDataClient` file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
 
 ![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/media/macroSoftwareArchitecture.PNG?raw=true)
 
 #### Website
-A website has been built in order to test the web capabilities of this the project. The website has been design to function as a profesional space in which the data from the PawPulse system can be displayed to users in real-time. The website has been built using HTML, CSS and JavaScript. To display data in real-time it utlises libraries such as the PubNub API and EON. The website has also been built to be responsive and hence can be viewd safley on phone and monitors. Example pictures from the "Live Data" page are given below:
+A website has been built in order to test the web capabilities of this project. The website has been designed to function as a profesional space in which the data from the PawPulse system can be displayed to users in real-time. The website has been built using HTML, CSS and JavaScript languages. To display data in real-time it utlises libraries such as PubNub API and EON. The website has also been built to be responsive and hence can be viewed safely on phone and monitors. Example screenshots from the "Live Data" page are given below:
 
 ![Web Monitor](https://github.com/jimmyng94/PawPulse/blob/master/media/websiteMonitor.PNG?raw=true)
 
@@ -32,7 +32,7 @@ A website has been built in order to test the web capabilities of this the proje
 The PawPulse website is hosted at https://tymonherzyk.github.io/PawPulseWeb/
 
 #### Guides
-Further information as well as indepth installation and development guides for this project can be found on our Github [Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
+Further information as well as in-depth installation and development guides for this project can be found on our Github [Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
 ## Quick Installation
 A full in-depth installation guide is available in our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation).
@@ -51,17 +51,17 @@ Install the required libraries in the correct destinations:
 * WiringPi
 
 #### 3. Make the processing.cpp executable
-To make the processing executable file navigate into the ? folder. Once in this folder run the following code:
+To make the `processing` executable file navigate into the ? folder. Once in this folder run the following code:
 ```
 cmake .
 make
 ```
 A new executable with the name "processing" should now be available in this folder.
 
-_If you want to make the processing demonstartion execuatble file simply navigate to the demo folder and run the same code. This will make processingDemo executable file._
+_If you want to make the processing demonstration executable file, simply navigate to the demo folder and run the same code. This will make processingDemo executable file._
 
 #### 4. Make the sendDataClient.cpp executable
-To make the sendDataClient executable file navigate into the sendDataClient folder Once in this directory run the following code:
+To make the `sendDataClient` executable file navigate into the folder containing `sendDataClient`. Once in this directory run the following code:
 ```
 make -f sendDataClient.mk
 ```
