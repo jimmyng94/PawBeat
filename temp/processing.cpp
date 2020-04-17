@@ -37,9 +37,9 @@ static volatile int stepflag = 0;
 static volatile int t = 0;
 vector <float> _bpm;
 std::vector<int> arr;	//handles simulated adc data
-std::vector<int> acc_x;	//handles simulated acc data
-std::vector<int> acc_y;
-std::vector<int> acc_z;
+std::vector<float> acc_x;	//handles simulated acc data
+std::vector<float> acc_y;
+std::vector<float> acc_z;
 static volatile bool threadRunning ;
 
 Adafruit_ADS1015 ads; 
@@ -56,6 +56,7 @@ void getStep(void){
 		z = imu.readFloatAccelZ();
 	}
 	else{
+		
 		if (acc_x.empty() == false){ 
 			x = acc_x.back();
 			acc_x.pop_back(); 
@@ -65,6 +66,7 @@ void getStep(void){
 			
 			z = acc_z.back();
 			acc_z.pop_back();
+			//cout<<  x << y<< z <<endl;
 		}
 	}
 	float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
@@ -216,6 +218,9 @@ void writeSTEP(){
 	//counter++;
 	std::thread th0(getBPM);
 	th0.join();
+}
+
+void startStep(){
 	std::thread th1(getStep);
 	th1.join();
 }
@@ -265,7 +270,7 @@ int main (int,char**)
 
 		// use a std::vector to store your items.  It handles memory allocation automatically.
 		
-		int number;
+		float number;
 
 		while (arr_handler>>number) {
 			arr.push_back(number);
@@ -274,15 +279,15 @@ int main (int,char**)
 			arr_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
 			
 	//Send simulated data to getStep function
-			std::ifstream accx_handler("3x.txt");
-		
-		//int number;
+		std::ifstream accx_handler("3x.txt");
 
 		while (accx_handler>>number) {
+			//cout<< typeid(number).name() << endl;
 			acc_x.push_back(number);
 
 			// ignore anything else on the line
-			accx_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');}
+			accx_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+			}
 			
 		std::ifstream accy_handler("3y.txt");
 		
@@ -304,7 +309,7 @@ int main (int,char**)
 			// ignore anything else on the line
 			accz_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
-	cout<< arr.empty() << endl;
+	//cout<<"acc "<< typeid(acc_x[1]).name() << endl;
 	
 	}
 	int count = 0;		
@@ -314,10 +319,9 @@ int main (int,char**)
 		int sleepTime = 1000000/120;
 		usleep(sleepTime);
 		if(arr.empty() == false){
-			getBPM();
-		}
-		if(count == 5 && acc_x.empty() == false){
-			getStep();
+			startHeart();}
+		if(count == 5){ //&& acc_x.empty() == false){
+			startStep();
 			count = 0;
 		}
 	}
