@@ -1,13 +1,13 @@
 #include <iostream> 
 #include <fstream> 
-//#include <fcntl.h> 
+#include <fcntl.h> 
 #include <inttypes.h> 
 #include <linux/i2c-dev.h> 
-//#include <stdio.h> 
+#include <stdio.h> 
 #include <unistd.h> 
-//#include <stdlib.h> 
-//#include <sys/types.h> 
-//#include <sys/stat.h> 
+#include <stdlib.h> 
+#include <sys/types.h> 
+#include <sys/stat.h> 
 #include <sys/ioctl.h> 
 #include <wiringPi.h> 
 #include <wiringPiI2C.h> 
@@ -18,9 +18,9 @@
 //#include <time.h> 
 #include "LSM6DS3.h"
 #include "Fir1.h"
-//#include <string.h> 
+#include <string.h> 
 #include <thread>
-//#include <sstream>
+#include <sstream>
 #define ADC_PIN 3	//input pin on Raspberry Pi for ADC for microphone, using wiringPi pin layout
 #define ACC_PIN 7	//input pin on Raspberry Pi for accelerometer, using wiringPi pin layout
 #define Fs 120		//sampling frequency of heartbeat
