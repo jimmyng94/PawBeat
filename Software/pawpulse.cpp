@@ -122,7 +122,7 @@ void getBPM(void){
 void writeBPM(){
     int fd; 
     const char* bpmMsg; 
-    const char* bpm_fifo = "../webClient/sendDataClient/bpm_fifo"; 
+    const char* bpm_fifo = "bpm_fifo"; 
     mkfifo(bpm_fifo, 0666);
     while(_bpm.size() != 0) {
 		auto bpm = _bpm.back();
@@ -148,7 +148,7 @@ void writeBPM(){
 void writeStep(){
     int fd; 
     const char* stepMsg; 
-    const char* step_fifo = "../webClient/sendDataClient/step_fifo"; 
+    const char* step_fifo = "step_fifo"; 
     mkfifo(step_fifo, 0666);
     while(_step.size() != 0) {
 		auto step = _step.back();
