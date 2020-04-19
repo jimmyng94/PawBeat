@@ -6,7 +6,7 @@ PawPulse is an [open-source](https://github.com/jimmyng94/PawPulse/blob/master/L
 - Pedometer
 - Live data display through a [website](https://tymonherzyk.github.io/PawPulseWeb/)
 
-Currently, the development of the project is only intended to be used on a dog. Usage on other pets will require further testing.
+Currently, the development of the project is only intended for use on a dog. Usage on other pets will require further testing.
 
 ## Project Architecture
 ![Basic Design](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/PawPulseDiagram.png?raw=true)
@@ -18,7 +18,7 @@ All the sensors along with the raspberry will be attached to a dog harness to co
 ![img8](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/image8.jpeg?raw=true)
 
 #### Software
-The PawPulse software is split into two main files: "pawpulse.cpp" and "pawpulseWebClient.cpp". The pawpulse file is responsible for aquiring data for the dog's heartbeat and step count from the corresponding hardware. Once the data has been aquired through the "getBPM" and "getStep" functions it is then passed to the "writeBPM" and "writeSTEP" functions. These functions sort the data into the correct JSON format and pass it to the pawpulseWebClient file through named pipes "bpm_fifo" and "step_fifo". The pawpulseWebClient file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
+The PawPulse software is split into two main files: `pawpulse.cpp` and `pawpulseWebClient.cpp`. The `pawpulse` file is responsible for aquiring data for the dog's heartbeat and step count from the corresponding hardware. Once the data has been aquired through the `getBPM` and `getStep` functions it is then passed to the `writeBPM` and `writeSTEP` functions. These functions sort the data into the correct JSON format and pass it to the pawpulseWebClient file through named pipes `bpm_fifo` and `step_fifo`. The `pawpulseWebClient` file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
 
 ![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/macroSoftwareArchitecture.PNG?raw=true)
 
@@ -35,15 +35,15 @@ The PawPulse website is hosted at https://tymonherzyk.github.io/PawPulseWeb/
 Further information as well as in-depth installation and development guides for this project can be found on our Github [Wiki](https://github.com/jimmyng94/PawPulse/wiki) Page.
 
 ## Quick Installation
-A full in-depth installation guide is available in our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation).
+A full in-depth installation guide is available in our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation-Guide).
 
 #### 1. Clone PawPulse github repository
-On the main repository page, click the green "Clone or Download" button, copy the address that drops down. In your chosen directory clone the PawPulse repository by running the folowing code:
+On the main repository page, click the green `Clone or Download` button, copy the address that drops down. In your chosen directory clone the PawPulse repository by running the folowing code:
 ```
 git clone *copied address*
 ```
 #### 2. Install required libraries
-Install the required libraries in the "Libraries" folder:
+Install the required libraries (see the wiki for more information):
 * ADS1015 Library
 * LSM6DS3 Library
 * Fir1 Library
@@ -51,19 +51,19 @@ Install the required libraries in the "Libraries" folder:
 * WiringPi
 
 #### 3. Make the pawpulse.cpp executable
-To make the pawpulse executable file navigate into the "Software" folder and use the "CMakeLists.txt" file. This is done by running the following code:
+To make the pawpulse executable file navigate into the "Software" folder and use the `CMakeLists.txt` file. This is done by running the following code:
 ```
 cmake .
 make
 ```
-A new executable with the name "pawpulse" should now be available in the "Software" folder.
+A new executable with the name `pawpulse` should now be available in the "Software" folder.
 
 #### 4. Make the pawpulseWebClient.cpp executable
-To make the pawpulseWebClient executable file navigate into the "Software" folder and use the "pawpulseWebClient.mk" makefile. This is done by running the following code:
+To make the pawpulseWebClient executable file navigate into the "Software" folder and use the `pawpulseWebClient.mk` makefile. This is done by running the following code:
 ```
 make -f pawpulseWebClient.mk
 ```
-A new executable with the name "pawpulseWebClient" should now be available in the "Software" folder.
+A new executable with the name `pawpulseWebClient` should now be available in the "Software" folder.
 
 #### 5. Run software
 
