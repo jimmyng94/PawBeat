@@ -1,1 +1,0 @@
-Pubnub library must be cloned into this folder for sendDataClient.mk to succesfully link pubnub files. If pubnub is cloned into a different folder file paths in the sendDataClient.mk must be changed to the correct folder

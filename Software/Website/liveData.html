@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Live Data</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="https://fonts.googleapis.com/css?family=Jua|Roboto+Mono&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="style.css">
+		<script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.20.2.js"></script>
+		<script src="https://pubnub.github.io/eon/v/eon/1.0.0/eon.js"></script>
+		<link rel="stylesheet" href="https://pubnub.github.io/eon/v/eon/1.0.0/eon.css"/>
+		
+		<script>
+			var pubnub = new PubNub({
+			publishKey: "pub-c-f6f91f16-a809-447a-9179-f2af45ec65f1",
+			subscribeKey: "sub-c-0ae8a45a-5581-11ea-b828-26d2a984a2e5",
+			ssl: true
+			});
+		</script>
+	</head>
+	
+	<body>
+		<header>
+			<img src="img\logo.png" alt="pawpulse logo" class="header-logo">
+			<nav>
+				<ul>
+					<li><a href="index.html">Home</a></li>
+					<li><a href="liveData.html">Live Data</a></li>
+					<li><a href="https://github.com/jimmyng94/PawPulse">Github</a></li> 
+				</ul>
+			</nav>
+		</header>
+	
+		<main>
+			<section class="title-banner">
+				<h1>Live Heartrate</h1>
+			</section>
+			
+			<section class="liveData-banner1">
+				<h2>Current Heartrate:<h2>
+				<p id="bpmMsg">___</p>
+			
+				<section class="liveData-chart">
+					<div id="heartrateChart"></div>
+					<script>
+						eon.chart({
+							pubnub: pubnub,
+							channels: ["bpm"],
+							history: false,
+							flow: true,
+							limit: 5,
+							generate: {
+								bindto: '#heartrateChart',
+								data: {
+									colors: {"bpm": "red"},
+									labels: true
+								},
+								axis: {
+									x: {
+										label: "TIME",
+										tick: { format: "%b%d-%H:%M:%S" }
+										},
+									y: {
+										label: "BPM"
+										},
+								}
+							}
+						});
+					</script>
+				</section>
+			</section>
+			
+			<section class="title-banner">
+				<h1>Live Step Counter</h1>
+			</section>
+			
+			<section class="liveData-banner2">
+				<h2>Current Step Count:<h2>
+				<p id="stepMsg">___</p>
+				
+				<section class="liveData-chart">	
+					<div id="stepCountChart"></div>
+					<script>
+						eon.chart({
+							pubnub: pubnub,
+							channels: ["step"],
+							history: false,
+							flow: true,
+							limit: 10,
+							generate: {
+								bindto: '#stepCountChart',
+								data: {
+									colors: {"steps": "blue"},
+									labels: true
+								},
+								axis: {
+									x: {
+										label: "TIME",
+										tick: { format: "%b%d-%H:%M:%S" }
+										},
+									y: {
+										label: "STEP COUNT"
+										},
+								}
+							}
+						});
+					</script>
+				</section>
+			</section>
+		</main>
+	
+		<footer>
+			<ul>
+				<li><h1>Contact us:<h1></li>
+				<li><h1>pawbeatstudent@gmail.com<h1></li>
+				<div class="footer-license"><li><h2>GNU GPL v3.0 License Copyright (c) 2020 PawPulse</h2></li></div>
+			</ul>
+			
+			<nav class="footer-social">
+				<a href="https://www.instagram.com/paw_pulse/"><img src="img\instagram.png" alt="instagram logo"></a>
+				<a href="https://twitter.com/paw_pulse"><img src="img\twitter.png" alt="twitter logo"></a>
+				<a href="https://github.com/jimmyng94/PawPulse"><img src="img\github.png" alt="github logo"></a>
+			</nav>
+		</footer>	
+</body>
+
+<script>
+	pubnub.addListener({ 
+		message: function(m) {  
+			var msg = m.message;
+			var channelName = m.channel;
+			console.log(m.message); 
+			if (channelName == "bpm") {
+				document.getElementById("bpmMsg").innerHTML = msg.eon.bpm;
+			}
+			if (channelName == "step") {
+				document.getElementById("stepMsg").innerHTML=msg.eon.steps;
+			}
+		}
+	});
+			
+	pubnub.subscribe({ 
+		channels: ['bpm','step'] 
+	});
+</script>
+</html>

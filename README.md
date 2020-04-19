@@ -18,7 +18,7 @@ All the sensors along with the raspberry will be attached to a dog harness to co
 ![img8](https://github.com/jimmyng94/PawPulse/blob/master/media/image8.jpeg?raw=true)
 
 #### Software
-The PawPulse software is split into two main files: `processing` and `sendDataClient`. The `processing` file is responsible for aquiring data for the dog's heartbeat and steps from the corresponding hardware. Once the data has been aquired through the `getBPM` and `getStep` functions it is then passed to the `writeBPM` and `writeSTEP` functions. These functions sort the data into the correct JSON format and pass it to the `sendDataClient` file through named pipes `bpm_fifo` and `step_fifo`. The `sendDataClient` file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
+The PawPulse software is split into two main files: "pawpulse.cpp" and "pawpulseWebClient.cpp". The pawpulse file is responsible for aquiring data for the dog's heartbeat and step count from the corresponding hardware. Once the data has been aquired through the "getBPM" and "getStep" functions it is then passed to the "writeBPM" and "writeSTEP" functions. These functions sort the data into the correct JSON format and pass it to the pawpulseWebClient file through named pipes "bpm_fifo" and "step_fifo". The pawpulseWebClient file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
 
 ![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/media/macroSoftwareArchitecture.PNG?raw=true)
 
@@ -38,47 +38,52 @@ Further information as well as in-depth installation and development guides for 
 A full in-depth installation guide is available in our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation).
 
 #### 1. Clone PawPulse github repository
-On the main repository page, click the green "Clone or Download" button, copy the address that drops down and in your chosen directory on the Raspberry Pi terminal, type the following:
+On the main repository page, click the green "Clone or Download" button, copy the address that drops down. In your chosen directory clone the PawPulse repository by running the folowing code:
 ```
 git clone *copied address*
 ```
 #### 2. Install required libraries
-Install the required libraries in the correct destinations:
+Install the required libraries in the "Libraries" folder:
 * ADS1015 Library
 * Fir1 Library
 * PubNub c-core
 * SparkFun blah Library
 * WiringPi
 
-#### 3. Make the processing.cpp executable
-To make the `processing` executable file navigate into the ? folder. Once in this folder run the following code:
+#### 3. Make the pawpulse.cpp executable
+To make the pawpulse executable file navigate into the "Software" folder and use the "CMakeLists.txt" file. This is done by running the following code:
 ```
 cmake .
 make
 ```
-A new executable with the name "processing" should now be available in this folder.
+A new executable with the name "pawpulse" should now be available in the "Software" folder.
 
-_If you want to make the processing demonstration executable file, simply navigate to the demo folder and run the same code. This will make processingDemo executable file._
-
-#### 4. Make the sendDataClient.cpp executable
-To make the `sendDataClient` executable file navigate into the folder containing `sendDataClient`. Once in this directory run the following code:
+#### 4. Make the pawpulseWebClient.cpp executable
+To make the pawpulseWebClient executable file navigate into the "Software" folder and use the "pawpulseWebClient.mk" makefile. This is done by running the following code:
 ```
-make -f sendDataClient.mk
+make -f pawpulseWebClient.mk
 ```
-A new executable with the name "sendDataClient" should now be available in this folder.
+A new executable with the name "pawpulseWebClient" should now be available in the "Software" folder.
 
 #### 5. Run software
 
 ## Additional Functionality
 Recommendations of possible functions that could be added in the future: 
+- Automated execution of the PawPulse software.
 - Live heartbeat playback allowing the owner to hear their pet's heartbeat and make it more convenient for a veterinarian to monitor pets
 - GPS tracking
 - Health diagnoses and recommendations
-- Personalised website login so each user can view data separately
+- Personalised website login
 - Phone application development for convenience
+
+## Demonstration
+A demonstartion of the real-time application and operation of the PawPulse software is available on the PawPulse youtube [channel](https://www.youtube.com/channel/UC-eADsYPdyjXFOSjoH-YVWg). The demonstartion shows the software being executed and the data being uploaded to the PawPulse website in real-time.
+
+Video Link - https://www.youtube.com/watch?v=mI9MpOQwHOM
 
 ## Social Media
 - [Instagram](https://www.instagram.com/paw_pulse/)
+- [Youtube](https://www.youtube.com/channel/UC-eADsYPdyjXFOSjoH-YVWg)
 - [Twitter](https://twitter.com/paw_pulse)
 
 ## Authors 
