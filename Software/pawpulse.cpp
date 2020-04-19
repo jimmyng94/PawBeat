@@ -23,7 +23,7 @@
 #include <sstream>
 #define ADC_PIN 3	//input pin for ADC for microphone
 #define ACC_PIN 7	//input pin for accelerometer
-#define Fs 120
+#define Fs 120		//sampling frequency of ADC
 
 using namespace std; 
 bool simulate = true;
@@ -40,8 +40,11 @@ std::vector<float> acc_y;
 std::vector<float> acc_z;
 static volatile bool threadRunning ;
 
+//set up hardware
 Adafruit_ADS1015 ads; 
 LSM6DS3 imu(I2C_MODE, 0x6A);
+
+//set up fir filter
 Fir1 fir("hr_coeff.dat");
 
 void getStep(void){
@@ -85,7 +88,7 @@ void getStep(void){
 		}
 	}
 	
-}
+}//end getStep
 
 void getBPM(void){
 	float val;
@@ -127,7 +130,7 @@ void getBPM(void){
 		}
 	}
 	t++;
-}
+}//end getBPM
 
 void writeBPM(){
     int fd; 
@@ -153,7 +156,7 @@ void writeBPM(){
 		}
 		close(fd); 
     }
-}
+}//end writeBPM
 
 void writeStep(){
     int fd; 
@@ -180,7 +183,7 @@ void writeStep(){
 		}
 			close(fd); 
     }
-}
+}//end writeStep
 
 
 void sendBPM(){
@@ -206,6 +209,7 @@ void startStep(){
 	std::thread th1(getStep);
 	th1.join();
 }
+
 int main (int,char**)
 {
 	fir.reset ();
@@ -238,7 +242,7 @@ int main (int,char**)
 		if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &startBPM) > 0){ 
 			cout << "INTERRUPT!" << endl; 
 		}
-	}
+	}//end if
 	
 	//If simulate is true, this means that new values will be coming in from pre-recorded data in a file. The ADS has one data file,
 	//while the accelerometer has three data files, one for each of the x, y, and z channels of its gyroscope
@@ -273,7 +277,6 @@ int main (int,char**)
 			// ignore anything else on the line
 			accz_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
-	}
 	
 	//while loop to ensure that ADS and accelerometer arrays are both processed fully. It uses the usleep function to send samples
 	//in the simulation at the rate they would normally be available from the ADS and accelerometer.
@@ -295,6 +298,7 @@ int main (int,char**)
 			sendStep();
 			count = 0;
 		}
-	}
+	}//end while
+	}//end else
 	return 0;
- }
+ }//end main
