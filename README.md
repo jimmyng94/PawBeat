@@ -20,7 +20,7 @@ All the sensors along with the raspberry will be attached to a dog harness to co
 #### Software
 The PawPulse software is split into two main files: `pawpulse.cpp` and `pawpulseWebClient.cpp`. The `pawpulse` file is responsible for aquiring data for the dog's heartbeat and step count from the corresponding hardware. Once the data has been aquired through the `getBPM` and `getStep` functions it is then passed to the `writeBPM` and `writeSTEP` functions. These functions sort the data into the correct JSON format and pass it to the pawpulseWebClient file through named pipes `bpm_fifo` and `step_fifo`. The `pawpulseWebClient` file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
 
-![Macro Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/macroSoftwareArchitecture.PNG?raw=true)
+![Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/softwareArchitecture.PNG?raw=true)
 
 #### Website
 A website has been built in order to test the web capabilities of this project. The website has been designed to function as a profesional space in which the data from the PawPulse system can be displayed to users in real-time. The website has been built using HTML, CSS and JavaScript languages. To display data in real-time it utlises libraries such as PubNub API and EON. The website has also been built to be responsive and hence can be viewed safely on phone and monitors. Example screenshots from the "Live Data" page are given below:
