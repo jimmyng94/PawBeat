@@ -18,7 +18,7 @@ All the sensors along with the raspberry will be attached to a dog harness to co
 ![img8](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/image8.jpeg?raw=true)
 
 #### Software
-The PawPulse software is split into two main files: `pawpulse.cpp` and `pawpulseWebClient.cpp`. The `pawpulse` file is responsible for aquiring data for the dog's heartbeat and step count from the corresponding hardware. Once the data has been aquired through the `getBPM` and `getStep` functions it is then passed to the `writeBPM` and `writeSTEP` functions. These functions sort the data into the correct JSON format and pass it to the pawpulseWebClient file through named pipes `bpm_fifo` and `step_fifo`. The `pawpulseWebClient` file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
+The PawPulse software is split into two main files **pawpulse.cpp** and **pawpulseWebClient.cpp**. The pawpulse file is responsible for aquiring data for the dog's heartbeat and step count from the corresponding hardware. Once the data has been aquired through the getBPM() and getStep() functions it is then passed to the writeBPM() and writeSTEP() functions. These functions sort the data into the correct JSON format and pass it to the pawpulseWebClient.cpp file through named pipes bpm_fifo and step_fifo. The pawpulseWebClient file is responsible for uploading the data to the PawPulse website through the PubNub API. Threading has been used throughout the software to allow both processes (bpm and step) to work at the same time.  
 
 ![Software Architecture](https://github.com/jimmyng94/PawPulse/blob/master/Other/Media/softwareArchitecture.png?raw=true)
 
@@ -38,7 +38,7 @@ Further information as well as in-depth installation and development guides for 
 A full in-depth installation guide is available in our [wiki](https://github.com/jimmyng94/PawPulse/wiki/Installation-Guide).
 
 #### 1. Clone PawPulse github repository
-On the main repository page, click the green `Clone or Download` button, copy the address that drops down. In your chosen directory clone the PawPulse repository by running the folowing code:
+On the main repository page, click the green "Clone or Download" button, copy the address that drops down. In your chosen directory clone the PawPulse repository by running the folowing code:
 ```
 git clone *copied address*
 ```
@@ -51,19 +51,19 @@ Install the required libraries (see the wiki for more information):
 * WiringPi
 
 #### 3. Make the pawpulse.cpp executable
-To make the pawpulse executable file navigate into the "Software" folder and use the `CMakeLists.txt` file. This is done by running the following code:
+To make the pawpulse executable file navigate into the "Software" folder and use the "CMakeLists.txt" file. This is done by running the following code:
 ```
 cmake .
 make
 ```
-A new executable with the name `pawpulse` should now be available in the "Software" folder.
+A new executable with the name **pawpulse** should now be available in the "Software" folder.
 
 #### 4. Make the pawpulseWebClient.cpp executable
-To make the pawpulseWebClient executable file navigate into the "Software" folder and use the `pawpulseWebClient.mk` makefile. This is done by running the following code:
+To make the pawpulseWebClient executable file navigate into the "Software" folder and use the "pawpulseWebClient.mk" makefile. This is done by running the following code:
 ```
 make -f pawpulseWebClient.mk
 ```
-A new executable with the name `pawpulseWebClient` should now be available in the "Software" folder.
+A new executable with the name **pawpulseWebClient** should now be available in the "Software" folder.
 
 #### 5. Run software
 
@@ -87,9 +87,9 @@ Video Link - https://www.youtube.com/watch?v=mI9MpOQwHOM
 - [Twitter](https://twitter.com/paw_pulse)
 
 ## Authors 
-- [Maggie Wood](https://github.com/maggwood)n-
-- [Ng Jing Ming](https://github.com/jimmyng94) -
-- [Tymon Herzyk](https://github.com/tymonherzyk) - WebClient and Website author
+- [Maggie Wood](https://github.com/maggwood) - Data acquisition and data filtering
+- [Ng Jing Ming](https://github.com/jimmyng94) - Hardware and hardware/software communication
+- [Tymon Herzyk](https://github.com/tymonherzyk) - IPC, web client and website
 
 ## Disclaimer
 Disruption due to COVID-19 has prohibited us from running any actual tests on our test dog. Thus, this project is not guaranteed to work on a dog. Testing was only done using a human heartbeat that was collected before the disruption. In the future we hope to be able to test it on a real pet and collect more data to improve our algorithm. Thank you for your understanding.
