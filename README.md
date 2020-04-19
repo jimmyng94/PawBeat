@@ -45,9 +45,9 @@ git clone *copied address*
 #### 2. Install required libraries
 Install the required libraries in the "Libraries" folder:
 * ADS1015 Library
+* LSM6DS3 Library
 * Fir1 Library
 * PubNub c-core
-* SparkFun blah Library
 * WiringPi
 
 #### 3. Make the pawpulse.cpp executable
@@ -77,7 +77,7 @@ Recommendations of possible functions that could be added in the future:
 - Phone application development for convenience
 
 ## Demonstration
-A demonstartion of the real-time application and operation of the PawPulse software is available on the PawPulse youtube [channel](https://www.youtube.com/channel/UC-eADsYPdyjXFOSjoH-YVWg). The demonstartion shows the software being executed and the data being uploaded to the PawPulse website in real-time.
+A demonstration of the real-time application and operation of the PawPulse software is available on the PawPulse [Youtube Channel](https://www.youtube.com/channel/UC-eADsYPdyjXFOSjoH-YVWg). The demonstration shows the software being executed and the data being uploaded to the PawPulse website in real-time.
 
 Video Link - https://www.youtube.com/watch?v=mI9MpOQwHOM
 
