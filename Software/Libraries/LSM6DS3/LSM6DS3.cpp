@@ -1,18 +1,19 @@
 /******************************************************************************
-SparkFunLSM6DS3.cpp
+SparkFunLSM6DS3.h
 LSM6DS3 Raspberry Pi
-
 Marshall Taylor @ SparkFun Electronics
-May 20, 2015
+original Creation Date :May 20, 2015
 https://github.com/sparkfun/LSM6DS3_Breakout
 https://github.com/sparkfun/SparkFun_LSM6DS3_Arduino_Library
 
-Resources:
-Uses WiringPi.h for i2c operation
-Either can be omitted if not used
+2020, Ng Jing Ming, ngjm57@ggmail.com
 
+Resources:
+Uses wiringPi.h for i2c operation
+Either can be omitted if not used
 Development environment specifics:
-Raspberry Pi
+Hardware Platform: Raspberry Pi
+IMU Hardware :LSM6DS3
 
 This code is released under the [MIT License](http://opensource.org/licenses/MIT).
 
