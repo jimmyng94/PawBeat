@@ -48,11 +48,14 @@ void getStep(void){
 	float x;
 	float y;
 	float z;
+	
+	//if simulate is false, get next available value of x, y, and z from accelerometer
 	if(simulate == false){
 		x = imu.readFloatAccelX();
 		y = imu.readFloatAccelY();
 		z = imu.readFloatAccelZ();
 	}
+	//if simulate is true, get next available value of x, y, and z from pre-recorded data
 	else{
 		if (acc_x.empty() == false){ 
 			x = acc_x.back();
@@ -65,7 +68,9 @@ void getStep(void){
 			acc_z.pop_back();
 		}
 	}
+	//calculate magnitude of x, y, and z to determine if a step has occurred (peak)
 	float mag = sqrt(pow(x,2)+pow(y,2)+pow(z,2));
+	//if peak occurs, add one to step count
 	if(mag > 1.2){
 		if(stepflag == 0){
 			step++;
@@ -84,9 +89,11 @@ void getStep(void){
 
 void getBPM(void){
 	float val;
+	//if simulate is false, get next available microphone readout from ADS
 	if (simulate == false){ 
 		val = ads.getLastConversionResults();  
 	}
+	//if simulate is true, get next available microphone readout from pre-recorded data
 	else
 	{	
 		if (arr.empty() == false){ 
@@ -94,9 +101,12 @@ void getBPM(void){
 			arr.pop_back(); 
 		}
 	}
+	//put value through FIR filter to remove noise
 	float newVal = fir.filter(val);
 	int bpm = 0;
+	//square values to remove negative numbers and to make peaks in data more apparent
 	newVal = pow(newVal,2);
+	//if peak occurs, identify time since last peak and use sampling frequency to calculate BPM
 	if(newVal > 300){
 		if(upflag == 0){
 			if(t > 0){
@@ -198,18 +208,19 @@ void startStep(){
 }
 int main (int,char**)
 {
-	// inits the filter
-	//fir("hr_coeff.txt");
-	// resets the delay line to zero
 	fir.reset ();
+	
+	//If the code is being processed in real-time, the value of simulation will be false. This will enable the programme to use an
+	//interrupt to determine when new values are available from the ADS.
 	if (simulate == false){
 		wiringPiSetup(); 
 		pinMode(ADC_PIN, INPUT);
-		//set up adc/ADS
+		//set up ADS
 		ads.begin(); 
 		ads.setGain(GAIN_FOUR);
-		//ads.startComparator_SingleEnded(0,0);
-		ads.startComparator_SingleEnded(0, 1000); 
+		ads.startComparator_SingleEnded(0, 1000);
+		
+		//If-statement to determine if the accelerometer is able to be read
 		if (imu.begin() != 0) 
 		{ 
 			std::cout << "Problem starting the sensor at 0x6A." << std::endl; 
@@ -222,22 +233,27 @@ int main (int,char**)
 			imu.settings.accelRange = 2;  //Max G force readable.  Can be: 2, 4, 8, 16
 			imu.settings.accelSampleRate = 26; //Hz.  Can be: 13, 26, 52, 104, 208, 416, 833, 1666, 3332, 6664, 13330
 		}  
-		//Interrupt when adc gets new reading
+		
+		//Interrupt when ADS gets new reading
 		if(wiringPiISR(ADC_PIN, INT_EDGE_RISING, &startBPM) > 0){ 
 			cout << "INTERRUPT!" << endl; 
 		}
 	}
+	
+	//If simulate is true, this means that new values will be coming in from pre-recorded data in a file. The ADS has one data file,
+	//while the accelerometer has three data files, one for each of the x, y, and z channels of its gyroscope
 	else{
-		//Send simulated data to getBPM function
+		//Create array for sending simulated heartbeat data to getBPM function
 		std::ifstream arr_handler("ads_120_C.txt");
-		// use a std::vector to store your items.  It handles memory allocation automatically.
+		// using a std::vector to items.  It handles memory allocation automatically.
 		float number;
 		while (arr_handler>>number) {
 			arr.push_back(number);
 			// ignore anything else on the line
 			arr_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
-		//Send simulated data to getStep function
+		
+		//Create 3 arrays for sending simulated step data to getStep function
 		std::ifstream accx_handler("3x.txt");
 		while (accx_handler>>number) {
 			//cout<< typeid(number).name() << endl;
@@ -258,10 +274,13 @@ int main (int,char**)
 			accz_handler.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 		}
 	}
+	
+	//while loop to ensure that ADS and accelerometer arrays are both processed fully. It uses the usleep function to send samples
+	//in the simulation at the rate they would normally be available from the ADS and accelerometer.
 	int count = 0;		
 	while (arr.empty() == false || acc_x.empty() == false){
 		count++;
-		// calling get bpm at 120sps
+		// calling getBPM at ADS sampling frequency, 120sps
 		int sleepTime = 1000000/120;
 		usleep(sleepTime);
 		if(arr.empty() == false){
@@ -269,7 +288,9 @@ int main (int,char**)
 			sendBPM();
 			
 		}
-		if(count == 5){ //&& acc_x.empty() == false){
+		//Accelerometer samples at 26sps, which is ~1/5 of the frequency of the ADS. This means that for every 5 samples sent by
+		//the ADS, one sample should be sent by the accelerometer.
+		if(count == 5){ 
 			startStep();
 			sendStep();
 			count = 0;
