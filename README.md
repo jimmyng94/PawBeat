@@ -66,7 +66,13 @@ make -f pawpulseWebClient.mk
 A new executable with the name **pawpulseWebClient** should now be available in the "Software" folder.
 
 #### 5. Run software
-
+To run both executables simply run the following code in the "Software" folder using two seprate command lines:
+```
+./pawpulseWebClient
+```
+```
+./pawpulse
+```
 ## Additional Functionality
 Recommendations of possible functions that could be added in the future: 
 - Automated execution of the PawPulse software.
